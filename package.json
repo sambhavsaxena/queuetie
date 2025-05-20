@@ -1,0 +1,36 @@
+{
+  "name": "queueazy",
+  "version": "1.0.0",
+  "description": "An open source adaptable alternative to Amazon's SQS",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sambhavsaxena/queueazy.git"
+  },
+  "author": "Sambhav Saxena",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sambhavsaxena/queueazy/issues"
+  },
+  "homepage": "https://github.com/sambhavsaxena/queueazy#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "bullmq": "^5.52.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "ioredis": "^5.6.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.15.0",
+    "nodemailer": "^7.0.3",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

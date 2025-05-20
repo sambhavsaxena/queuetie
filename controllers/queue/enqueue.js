@@ -1,0 +1,48 @@
+import produce_email_enqueue_job from "../../core/producer.js";
+import Keys from "../../models/keys.js";
+
+const enqueue_controller = async (req, res) => {
+  try {
+    const { user } = req;
+    const { key } = req.body;
+    if (!user || !key) {
+      return res
+        .status(401)
+        .send({
+          error: `Unauthorized: ${user ? "Missing key" : "Missing user"}`,
+        });
+    }
+    const keysDoc = await Keys.findOne({ user: user._id });
+    if (!keysDoc) {
+      return res.status(403).send({ error: "No keys assigned to user: " + user.email });
+    }
+    const keyObj = keysDoc.keys.find((k) => k.key === key);
+    if (!keyObj) {
+      return res.status(403).send({ error: "Invalid key" });
+    }
+    if (keyObj.limit <= 0) {
+      return res.status(429).send({ error: "Key usage limit exceeded." });
+    }
+    const { email, subject, body, attachments } = req.body;
+    if (!email) {
+      return res.status(400).send({ error: "Please provide email." });
+    }
+    const id = await produce_email_enqueue_job(
+      email,
+      subject,
+      body,
+      attachments
+    );
+    keyObj.limit -= 1;
+    await keysDoc.save();
+    return res
+      .status(201)
+      .send({ status: "success", id: id });
+  } catch (error) {
+    return res
+      .status(500)
+      .send({ error: "Enqueue process failed: " + error.message });
+  }
+};
+
+export default enqueue_controller;
