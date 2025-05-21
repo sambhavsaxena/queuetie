@@ -29,7 +29,6 @@ type Token = {
   id: string;
   identifier: string;
   key: string;
-  limit: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -139,7 +138,6 @@ export function TokensList() {
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Token</TableHead>
-                <TableHead>Limit</TableHead>
                 <TableHead>Created At</TableHead>
                 <TableHead className="w-[100px]">Actions</TableHead>
               </TableRow>
@@ -166,7 +164,6 @@ export function TokensList() {
                       </Button>
                     </div>
                   </TableCell>
-                  <TableCell>{token.limit}</TableCell>
                   <TableCell>{token.createdAt}</TableCell>
                   <TableCell>
                     <Button

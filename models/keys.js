@@ -11,17 +11,12 @@ const schema = mongoose.Schema(
         key: {
           type: String,
           required: true,
-          unique: true
+          unique: true,
         },
         identifier: {
           type: String,
           required: true,
-          unique: true
-        },
-        limit: {
-          type: Number,
-          required: true,
-          default: 10,
+          unique: true,
         },
         createdAt: {
           type: Date,
@@ -33,6 +28,14 @@ const schema = mongoose.Schema(
         },
       },
     ],
+    max_quota: {
+      type: Number,
+      default: 20,
+    },
+    used_quota: {
+      type: Number,
+      default: 0,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

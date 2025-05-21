@@ -10,11 +10,7 @@ const schema = mongoose.Schema(
         isVerified: {
             type: Boolean,
             default: false,
-        },
-        max_limit: {
-            type: Number,
-            default: 100,
-        },
+        }
     },
     {
         timestamps: true,

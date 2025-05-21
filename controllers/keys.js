@@ -9,19 +9,24 @@ const create_key = async (req, res) => {
     if (!user) {
       return res.status(401).send({ error: "Unauthorized" });
     }
-    let key_document = await Keys.findOne({ user: user._id });
     const new_key = "qt_" + crypto.randomBytes(8).toString("hex");
+    let key_document = await Keys.findOne({ user: user._id });
     if (!key_document) {
       key_document = await Keys.create({
         user: user._id,
-        keys: [{ identifier: identifier, key: new_key, limit: 10 }],
+        keys: [{ identifier: identifier, key: new_key }],
+      });
+      await Activity.create({
+        type: "key_create",
+        info: `Key created with identifier ${identifier}`,
+        user: user._id,
+        status: "success",
       });
       return res.status(201).send({ status: "success", key: new_key });
     } else {
       key_document.keys.push({
         identifier: identifier,
         key: new_key,
-        limit: 10,
       });
       await key_document.save();
       await Activity.create({
@@ -53,7 +58,6 @@ const get_keys = async (req, res) => {
       id: key.id,
       identifier: key.identifier,
       key: key.key,
-      limit: key.limit,
       createdAt: key.createdAt,
       updatedAt: key.updatedAt,
     }));

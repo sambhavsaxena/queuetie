@@ -21,8 +21,9 @@ const enqueue_controller = async (req, res) => {
     if (!keyObj) {
       return res.status(403).send({ error: "Invalid key" });
     }
-    if (keyObj.limit <= 0) {
-      return res.status(429).send({ error: "Key usage limit exceeded." });
+    const remaining_emails = keysDoc.max_quota - keysDoc.used_quota;
+    if (remaining_emails <= 0) {
+      return res.status(429).send({ error: "Usage quota exhausted." });
     }
     const { email, subject, body, attachments } = req.body;
     if (!email) {
@@ -34,7 +35,7 @@ const enqueue_controller = async (req, res) => {
       body,
       attachments
     );
-    keyObj.limit -= 1;
+    keysDoc.used_quota += 1;
     await keysDoc.save();
     await Activity.create({
       type: "enqueue",
