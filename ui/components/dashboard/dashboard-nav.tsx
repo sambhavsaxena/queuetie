@@ -8,8 +8,8 @@ import {
   Key,
   BarChart3,
   PlayCircle,
-  FileText,
   Settings,
+  ArrowUpNarrowWide
 } from "lucide-react";
 
 const navItems = [
@@ -29,11 +29,6 @@ const navItems = [
     icon: PlayCircle,
   },
   {
-    title: "Documentation",
-    href: "/docs",
-    icon: FileText,
-  },
-  {
     title: "Analytics",
     href: "/dashboard/analytics",
     icon: BarChart3,
@@ -42,6 +37,11 @@ const navItems = [
     title: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
+  },
+  {
+    title: "Upgrade",
+    href: "/pricing",
+    icon: ArrowUpNarrowWide,
   }
 ];
 

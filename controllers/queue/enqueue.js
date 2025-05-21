@@ -1,27 +1,34 @@
 import produce_email_enqueue_job from "../../core/producer.js";
 import Keys from "../../models/keys.js";
 import Activity from "../../models/activity.js";
+import User from "../../models/user.js";
 
 const enqueue_controller = async (req, res) => {
   try {
-    const { user } = req;
     const { key } = req.body;
-    if (!user || !key) {
+    if (!key) {
+      return res.status(401).send({
+      error: `Unauthorized: Missing key`,
+      });
+    }
+    const keys_document = await Keys.findOne({ "keys.key": key });
+    if (!keys_document) {
+      return res.status(403).send({ error: "Key not found." });
+    }
+    const user = await User.findById(keys_document.user);
+    if (!user) {
+      return res.status(403).send({ error: "User not found." });
+    }
+    if (!keys_document) {
       return res
-        .status(401)
-        .send({
-          error: `Unauthorized: ${user ? "Missing key" : "Missing user"}`,
-        });
+        .status(403)
+        .send({ error: "No keys assigned to user " + user.email });
     }
-    const keysDoc = await Keys.findOne({ user: user._id });
-    if (!keysDoc) {
-      return res.status(403).send({ error: "No keys assigned to user " + user.email });
-    }
-    const keyObj = keysDoc.keys.find((k) => k.key === key);
-    if (!keyObj) {
+    const key_object = keys_document.keys.find((k) => k.key === key);
+    if (!key_object) {
       return res.status(403).send({ error: "Invalid key" });
     }
-    const remaining_emails = keysDoc.max_quota - keysDoc.used_quota;
+    const remaining_emails = keys_document.max_quota - keys_document.used_quota;
     if (remaining_emails <= 0) {
       return res.status(429).send({ error: "Usage quota exhausted." });
     }
@@ -35,17 +42,15 @@ const enqueue_controller = async (req, res) => {
       body,
       attachments
     );
-    keysDoc.used_quota += 1;
-    await keysDoc.save();
+    keys_document.used_quota += 1;
+    await keys_document.save();
     await Activity.create({
       type: "enqueue",
       info: `Enqueued email to ${email}`,
       user: user._id,
       status: "success",
     });
-    return res
-      .status(201)
-      .send({ status: "success", id: id });
+    return res.status(201).send({ status: "success", id: id });
   } catch (error) {
     return res
       .status(500)

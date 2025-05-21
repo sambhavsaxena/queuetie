@@ -51,6 +51,12 @@ export function Header({ token }: HeaderProps) {
           >
             Dashboard
           </Link>
+          <Link
+            href="/pricing"
+            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Pricing
+          </Link>
         </nav>
         <div className="flex items-center gap-4">
           {!token ? (

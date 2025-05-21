@@ -7,7 +7,7 @@ import queue_routes from "./routes/queue.js";
 import user_routes from "./routes/user.js";
 import keys_routes from "./routes/keys.js";
 import activity_routes from "./routes/activity.js";
-import email_routes from "./routes/email.js";
+import analytics_routes from "./routes/analytics.js";
 import { not_found, error_handler } from "./middlewares/error.js";
 import {
   initialize_connections,
@@ -32,7 +32,7 @@ app.use("/api/queue", queue_routes);
 app.use("/api/user", user_routes);
 app.use('/api/keys', keys_routes);
 app.use('/api/activity', activity_routes);
-app.use("/api/email", email_routes);
+app.use('/api/analytics', analytics_routes);
 app.use(not_found);
 app.use(error_handler);
 

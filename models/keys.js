@@ -30,7 +30,7 @@ const schema = mongoose.Schema(
     ],
     max_quota: {
       type: Number,
-      default: 20,
+      default: 50,
     },
     used_quota: {
       type: Number,

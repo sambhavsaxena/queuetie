@@ -5,7 +5,7 @@ import auth_middleware from "../middlewares/auth.js";
 
 const router = express.Router();
 
-router.route("/enqueue").post(auth_middleware, enqueue_controller);
+router.route("/enqueue").post(enqueue_controller);
 router.route("/dequeue").post(auth_middleware, dequeue_controller);
 
 export default router;

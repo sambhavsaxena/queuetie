@@ -9,7 +9,7 @@ const create_key = async (req, res) => {
     if (!user) {
       return res.status(401).send({ error: "Unauthorized" });
     }
-    const new_key = "qt_" + crypto.randomBytes(8).toString("hex");
+    const new_key = "qt_" + crypto.randomBytes(16).toString("hex");
     let key_document = await Keys.findOne({ user: user._id });
     if (!key_document) {
       key_document = await Keys.create({

@@ -28,7 +28,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/features" className="text-sm text-muted-foreground hover:text-foreground">
+                <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
                   Features
                 </Link>
               </li>
@@ -44,7 +44,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/support" className="text-sm text-muted-foreground hover:text-foreground">
+                <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground">
                   Support
                 </Link>
               </li>
@@ -60,18 +60,13 @@ export function Footer() {
             <h3 className="text-sm font-semibold mb-4">Company</h3>
             <ul className="flex flex-col gap-2">
               <li>
-                <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground">
-                  About Us
+                <Link href="https://interpreted.vercel.app" target='_blank' referrerPolicy="no-referrer" className="text-sm text-muted-foreground hover:text-foreground">
+                  About
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground">
                   Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/legal" className="text-sm text-muted-foreground hover:text-foreground">
-                  Legal
                 </Link>
               </li>
             </ul>
