@@ -52,9 +52,7 @@ export const email_worker = new Worker(
   },
   {
     connection: worker_connection,
-    concurrency: 20,
-    limiter: { max: 50, duration: 60_000 },
-    settings: { lockDuration: 300000 },
+    concurrency: 10,
     defaultJobOptions: {
       attempts: 3,
       backoff: { type: "exponential", delay: 1000 },
@@ -70,7 +68,7 @@ email_worker.on("completed", (job) =>
   console.log(`Job ${job.id} completed successfully`)
 );
 
-const safeQuit = async client => {
+const safeQuit = async (client) => {
   try {
     if (client.status !== "end") await client.quit();
   } catch (err) {

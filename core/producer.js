@@ -14,7 +14,15 @@ const produce_email_enqueue_job = async (email, subject, body, attachments) => {
     if (attachments && Array.isArray(attachments)) {
       payload.attachments = attachments;
     }
-    const response = await email_queue.add("email", payload);
+    const response = await email_queue.add("email", payload, {
+      attempts: 3,
+      backoff: {
+        type: "exponential",
+        delay: 5000,
+      },
+      removeOnComplete: true,
+      removeOnFail: false,
+    });
     return response.id;
   } catch (error) {
     console.error("Error queueing email: ", error);

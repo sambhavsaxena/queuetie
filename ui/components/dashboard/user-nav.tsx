@@ -78,9 +78,6 @@ export function UserNav({ token }: NavbarProps) {
           <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
             Settings
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/dashboard/billing")}>
-            Billing
-          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>Log out</DropdownMenuItem>

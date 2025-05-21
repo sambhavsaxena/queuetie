@@ -5,13 +5,30 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Menu } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-interface NavbarProps {
+interface HeaderProps {
   token: string;
 }
 
-export function Navbar({ token }: NavbarProps) {
+export function Header({ token }: HeaderProps) {
+  const router = useRouter();
+  const handleLogout = () => {
+    fetch("/api/user/logout", {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((res) => {
+        if (res.ok) {
+          router.refresh();
+          router.push("/");
+        }
+      })
+      .catch((err) => {
+        console.error("Logout failed", err);
+      });
+  };
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -21,7 +38,6 @@ export function Navbar({ token }: NavbarProps) {
             <span className="text-xl font-bold"> Queuetie </span>
           </Link>
         </div>
-
         <nav className="hidden md:flex items-center gap-6">
           <Link
             href="/docs"
@@ -30,28 +46,26 @@ export function Navbar({ token }: NavbarProps) {
             Documentation
           </Link>
           <Link
-            href="/pricing"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Pricing
-          </Link>
-          <Link
             href="/dashboard"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Dashboard
           </Link>
         </nav>
-
         <div className="flex items-center gap-4">
-          {!token && (
+          {!token ? (
             <div className="hidden md:flex items-center gap-4">
               <Link href="/login">
                 <Button variant="outline">Log in</Button>
               </Link>
             </div>
+          ) : (
+            <div className="hidden md:flex items-center gap-4">
+              <Button onClick={handleLogout} variant="outline">
+                Log Out
+              </Button>
+            </div>
           )}
-
           <ModeToggle />
 
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
@@ -84,7 +98,17 @@ export function Navbar({ token }: NavbarProps) {
                 >
                   Dashboard
                 </Link>
-                {!token && (
+                {token ? (
+                  <div className="mt-4 flex flex-col gap-2">
+                    <Button
+                      onClick={handleLogout}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Log Out
+                    </Button>
+                  </div>
+                ) : (
                   <div className="mt-4 flex flex-col gap-2">
                     <Link href="/login" onClick={() => setIsMenuOpen(false)}>
                       <Button variant="outline" className="w-full">

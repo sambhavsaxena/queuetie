@@ -432,7 +432,6 @@ const sendEmail = async () => {
       attachments: []
     })
   });
-
   const data = await response.json();
   console.log(data);
 };

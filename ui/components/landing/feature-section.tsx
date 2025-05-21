@@ -30,26 +30,26 @@ export function FeatureSection() {
           <div className="p-6 md:p-8">
             <h3 className="font-bold text-xl md:text-2xl mb-4">API Example</h3>
             <p className="text-muted-foreground mb-6">
-              Send an email with just a few lines of code
+              Enqueue your emails with just hitting an API.
             </p>
             <div className="rounded-lg bg-background/70 p-4">
-              <pre className="text-xs md:text-sm overflow-x-auto whitespace-pre-wrap"><code>{`// Send an email using fetch
-fetch('https://api.queuetie.com/v1/send', {
+              <pre className="text-xs md:text-sm overflow-x-auto whitespace-pre-wrap"><code>{`fetch('https://api.queuetie.com/v1/email/enqueue', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer YOUR_API_TOKEN'
   },
   body: JSON.stringify({
     email: 'recipient@example.com',
     subject: 'Hello from Queuetie API',
     body: 'This is a test email sent using the Queuetie API!',
-    attachments: []
+    attachments: [],
+    key: 'your_api_token_here'
   })
 })
 .then(response => response.json())
 .then(data => console.log(data))
-.catch(error => console.error('Error:', error));`}</code></pre>
+.catch(error => console.error('Error:', error));`}
+                </code></pre>
             </div>
           </div>
         </div>

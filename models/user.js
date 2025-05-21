@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
 
 const schema = mongoose.Schema(
     {
@@ -11,7 +10,11 @@ const schema = mongoose.Schema(
         isVerified: {
             type: Boolean,
             default: false,
-        }
+        },
+        max_limit: {
+            type: Number,
+            default: 100,
+        },
     },
     {
         timestamps: true,

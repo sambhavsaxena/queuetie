@@ -2,9 +2,7 @@ import { Queue } from "bullmq";
 import Redis from "ioredis";
 import dotenv from "dotenv";
 
-import {
-  create_mongodb_connection,
-} from "../db/server.js";
+import { create_mongodb_connection } from "../db/server.js";
 
 dotenv.config();
 
@@ -29,7 +27,9 @@ export const initialize_connections = async () => {
   redis_connection.on("error", (err) =>
     console.error("Redis connection error:", err)
   );
-  redis_connection.on("connect", () => console.log("Redis connected: ", redis_connection.options.host));
+  redis_connection.on("connect", () =>
+    console.log("Redis connected: ", redis_connection.options.host)
+  );
 
   email_queue = new Queue("email-queue", {
     connection: redis_connection.duplicate(),
@@ -38,7 +38,7 @@ export const initialize_connections = async () => {
   email_queue.on("completed", (job) => console.log(`Job ${job.id} completed`));
 };
 
-const safeQuit = async client => {
+const safeQuit = async (client) => {
   try {
     if (client.status !== "end") await client.quit();
     console.log("Redis connection closed");

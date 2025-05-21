@@ -11,10 +11,12 @@ const schema = mongoose.Schema(
         key: {
           type: String,
           required: true,
+          unique: true
         },
         identifier: {
           type: String,
           required: true,
+          unique: true
         },
         limit: {
           type: Number,

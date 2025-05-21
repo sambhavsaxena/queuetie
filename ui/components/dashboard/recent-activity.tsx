@@ -33,7 +33,7 @@ const activityMap: Record<
   verify: { label: "Login approved", Icon: ShieldCheck },
   key_delete: { label: "Token deleted", Icon: KeyRound },
   key_create: { label: "Token created", Icon: Key },
-  enqueue: { label: "Email sent", Icon: Send },
+  enqueue: { label: "Email enqueued", Icon: Send },
 };
 
 export function RecentActivity() {

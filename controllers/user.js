@@ -35,7 +35,7 @@ const login_user = async (req, res) => {
       await send_email_verification(existing_user);
       await Activity.create({
         type: "login",
-        info: `User ${existing_user} requested verification.`,
+        info: `User ${existing_user.email} requested verification.`,
         user: existing_user._id,
         status: "success",
       });
