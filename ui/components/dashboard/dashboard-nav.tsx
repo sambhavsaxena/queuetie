@@ -24,14 +24,14 @@ const navItems = [
     icon: Key,
   },
   {
-    title: "Documentation",
-    href: "/docs",
-    icon: FileText,
-  },
-  {
     title: "Playground",
     href: "/dashboard/playground",
     icon: PlayCircle,
+  },
+  {
+    title: "Documentation",
+    href: "/docs",
+    icon: FileText,
   },
   {
     title: "Analytics",

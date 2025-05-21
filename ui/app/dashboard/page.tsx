@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import {cookies} from "next/headers";
 
 export default function DashboardPage() {
-  const isAuthenticated = true; // Replace with actual authentication check
-  if (!isAuthenticated) {
+  const token = cookies().get("token")?.value ?? "";
+  if (!token) {
     redirect("/login");
   }
   return (

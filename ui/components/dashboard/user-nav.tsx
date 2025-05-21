@@ -14,7 +14,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export function UserNav() {
+interface NavbarProps {
+  token: string;
+}
+
+export function UserNav({ token }: NavbarProps) {
   const [user, setUser] = useState<{ email: string }>({ email: "" });
   const router = useRouter();
 
@@ -34,10 +38,19 @@ export function UserNav() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser({ email: "" });
-    router.refresh();
-    router.push("/login");
+    fetch("/api/user/logout", {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((res) => {
+        if (res.ok) {
+          router.refresh();
+          router.push("/");
+        }
+      })
+      .catch((err) => {
+        console.error("Logout failed", err);
+      });
   };
 
   return (
@@ -62,9 +75,6 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
-            Profile
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
             Settings
           </DropdownMenuItem>

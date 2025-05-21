@@ -1,4 +1,4 @@
-import { PlaygroundForm } from '@/components/dashboard/playground/playground-form'
+import { PlaygroundForm } from "@/components/dashboard/playground/playground-form";
 
 export default function PlaygroundPage() {
   return (
@@ -9,10 +9,10 @@ export default function PlaygroundPage() {
           Test your API tokens by sending emails directly from this interface
         </p>
       </div>
-      
+
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm">
         <PlaygroundForm />
       </div>
     </div>
-  )
+  );
 }

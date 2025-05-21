@@ -80,6 +80,14 @@ const verify_user = async (req, res) => {
     return res.status(500).json({ error: "Error: " + error.message });
   }
 };
+const logout_user = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json({ message: "Logged out successfully." });
+  } catch (error) {
+    return res.status(500).json({ error: "Error: " + error.message });
+  }
+};
 
 const update_user = async (req, res) => {
   try {
@@ -91,4 +99,4 @@ const delete_user = async (req, res) => {
   } catch (error) {}
 };
 
-export { login_user, verify_user, update_user, delete_user };
+export { login_user, verify_user, update_user, delete_user, logout_user };

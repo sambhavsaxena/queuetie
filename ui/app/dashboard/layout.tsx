@@ -3,6 +3,7 @@ import { DashboardNav } from "@/components/dashboard/dashboard-nav";
 import { UserNav } from "@/components/dashboard/user-nav";
 import { ModeToggle } from "@/components/mode-toggle";
 import Link from "next/link";
+import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Dashboard - Queuetie",
@@ -14,6 +15,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const token = cookies().get("token")?.value ?? "";
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -26,7 +28,7 @@ export default function DashboardLayout({
 
           <div className="flex items-center gap-4">
             <ModeToggle />
-            <UserNav />
+            <UserNav token={token} />
           </div>
         </div>
       </header>

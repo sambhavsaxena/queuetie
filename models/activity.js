@@ -2,15 +2,11 @@ import mongoose from "mongoose"
 
 const schema = mongoose.Schema(
     {
-        email: {
+        type: {
             type: String,
             required: true,
         },
-        subject: {
-            type: String,
-            required: true,
-        },
-        body: {
+        info: {
             type: String,
             required: true,
         },
@@ -18,10 +14,6 @@ const schema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: "User",
-        },
-        key: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
         }
     },
     {
@@ -29,6 +21,6 @@ const schema = mongoose.Schema(
     }
 )
 
-const Email = mongoose.model("Email", schema)
+const Activity = mongoose.model("Activity", schema)
 
-export default Email;
+export default Activity;

@@ -7,15 +7,12 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-export function Navbar() {
+interface NavbarProps {
+  token: string;
+}
+
+export function Navbar({ token }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    setIsLoggedIn(user !== null);
-  }, []);
-
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
@@ -47,9 +44,7 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-4">
-          {isLoggedIn ? (
-            <></>
-          ) : (
+          {!token && (
             <div className="hidden md:flex items-center gap-4">
               <Link href="/login">
                 <Button variant="outline">Log in</Button>
@@ -89,9 +84,7 @@ export function Navbar() {
                 >
                   Dashboard
                 </Link>
-                {isLoggedIn ? (
-                  <></>
-                ) : (
+                {!token && (
                   <div className="mt-4 flex flex-col gap-2">
                     <Link href="/login" onClick={() => setIsMenuOpen(false)}>
                       <Button variant="outline" className="w-full">
