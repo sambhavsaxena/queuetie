@@ -15,7 +15,7 @@ const enqueue_controller = async (req, res) => {
     }
     const keysDoc = await Keys.findOne({ user: user._id });
     if (!keysDoc) {
-      return res.status(403).send({ error: "No keys assigned to user: " + user.email });
+      return res.status(403).send({ error: "No keys assigned to user " + user.email });
     }
     const keyObj = keysDoc.keys.find((k) => k.key === key);
     if (!keyObj) {

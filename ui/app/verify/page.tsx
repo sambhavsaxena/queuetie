@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { LockKeyholeOpen } from "lucide-react";
@@ -11,7 +11,12 @@ export default function VerifyPage() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("loading");
   const [message, setMessage] = useState<string>("Verifying your email...");
 
+  const hasRun = useRef(false);
+
   useEffect(() => {
+    if (hasRun.current) return;
+    hasRun.current = true;
+
     let token: string | null = null;
     if (typeof window !== "undefined") {
       token = new URL(window.location.href).searchParams.get("token");
@@ -28,21 +33,22 @@ export default function VerifyPage() {
       setMessage("Verifying your email");
 
       try {
-        const res = await fetch(
-          `/api/user/verify?token=${token}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ token }),
-          }
-        );
+        const res = await fetch(`/api/user/verify?token=${token}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ token }),
+        });
 
         const data = await res.json();
 
         if (res.ok) {
           if (data.token) {
-            Cookies.set("token", data.token, { expires: 30, secure: true, sameSite: "strict" });
+            Cookies.set("token", data.token, {
+              expires: 30,
+              secure: true,
+              sameSite: "strict",
+            });
           }
 
           setStatus("success");
@@ -55,8 +61,7 @@ export default function VerifyPage() {
           setStatus("error");
           setMessage(data.error || "Verification failed.");
         }
-      }
-      catch (error) {
+      } catch (error) {
         setStatus("error");
         setMessage("Error: " + (error as Error).message);
       }
@@ -98,7 +103,6 @@ export default function VerifyPage() {
             {status === "loading" && spinner}
             {status === "success" && successIcon}
             {status === "error" && errorIcon}
-
             {status === "error" ? (
               message
             ) : (

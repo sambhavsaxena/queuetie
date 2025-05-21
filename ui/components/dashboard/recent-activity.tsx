@@ -1,7 +1,18 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Mail, RefreshCw, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  Mail,
+  RefreshCw,
+  CheckCircle,
+  AlertCircle,
+  LogIn,
+  LogOut,
+  ShieldCheck,
+  Key,
+  KeyRound,
+  Send,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { format } from "timeago.js";
 
@@ -11,6 +22,18 @@ type Activity = {
   status: "success" | "failed";
   createdAt: string;
   info: string;
+};
+
+const activityMap: Record<
+  string,
+  { label: string; Icon: React.ComponentType<{ className?: string }> }
+> = {
+  login: { label: "Requested Login", Icon: LogIn },
+  logout: { label: "Logged out", Icon: LogOut },
+  verify: { label: "Login approved", Icon: ShieldCheck },
+  key_delete: { label: "Token deleted", Icon: KeyRound },
+  key_create: { label: "Token created", Icon: Key },
+  enqueue: { label: "Email sent", Icon: Send },
 };
 
 export function RecentActivity() {
@@ -24,7 +47,6 @@ export function RecentActivity() {
           throw new Error("Failed to fetch activities");
         }
         const data = await response.json();
-        console.log("Fetched activities:", data);
         setActivities(Array.isArray(data.activities) ? data.activities : []);
       } catch (error) {
         console.error("Error fetching activities:", error);
@@ -45,55 +67,48 @@ export function RecentActivity() {
         </div>
       ) : (
         <ul className="space-y-2">
-          {activities.map((activity) => (
-            <li
-              key={activity.id}
-              className="flex items-center gap-3 rounded-md border border-border/40 bg-background/40 p-3"
-            >
-              <div
-                className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-full",
-                  activity.status === "success"
-                    ? "bg-green-500/10 text-green-500"
-                    : "bg-red-500/10 text-red-500"
-                )}
+          {activities.map((activity) => {
+            const mapping = activityMap[activity.type];
+            const ActivityIcon = mapping?.Icon ?? RefreshCw;
+            const label = mapping?.label ?? activity.type;
+
+            return (
+              <li
+                key={activity.id}
+                className="flex items-center gap-3 rounded-md border border-border/40 bg-background/40 p-3"
               >
-                {activity.type.includes("email") ? (
-                  <Mail className="h-4 w-4" />
-                ) : (
-                  <RefreshCw className="h-4 w-4" />
-                )}
-              </div>
-              <div className="flex-1 space-y-1">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium">
-                    {activity.type === "login" && "Requested Login"}
-                    {activity.type === "logout" && "Logged out"}
-                    {activity.type === "verify" && "Login approved"}
-                    {activity.type === "key_delete" && "Token deleted"}
-                    {activity.type === "key_create" && "Token created"}
-                    {activity.type === "enqueue" && "Email sent"}
-                  </p>
-                  <span
-                    className="text-xs text-muted-foreground"
-                    title={activity.createdAt}
-                  >
-                    {format(activity.createdAt)}
-                  </span>
+                <div
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center rounded-full",
+                    activity.status === "success"
+                      ? "bg-green-500/10 text-green-500"
+                      : "bg-red-500/10 text-red-500"
+                  )}
+                >
+                  <ActivityIcon className="h-4 w-4" />
                 </div>
-
-                <p className="text-xs text-muted-foreground">{activity.info}</p>
-              </div>
-
-              <div>
-                {activity.status === "success" ? (
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                ) : (
-                  <AlertCircle className="h-4 w-4 text-red-500" />
-                )}
-              </div>
-            </li>
-          ))}
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium">{label}</p>
+                    <span
+                      className="text-xs text-muted-foreground"
+                      title={activity.createdAt}
+                    >
+                      {format(activity.createdAt)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{activity.info}</p>
+                </div>
+                <div>
+                  {activity.status === "success" ? (
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                  ) : (
+                    <AlertCircle className="h-4 w-4 text-red-500" />
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

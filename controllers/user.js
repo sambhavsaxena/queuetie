@@ -33,6 +33,12 @@ const login_user = async (req, res) => {
     const existing_user = await User.findOne({ email });
     if (existing_user) {
       await send_email_verification(existing_user);
+      await Activity.create({
+        type: "login",
+        info: `User ${existing_user} requested verification.`,
+        user: existing_user._id,
+        status: "success",
+      });
       return res
         .status(200)
         .json({ message: "Log in using the link sent to your email." });
@@ -47,8 +53,8 @@ const login_user = async (req, res) => {
     await send_email_verification(user);
     await Activity.create({
       type: "login",
-      info: `User ${existing_user ? existing_user.email: user.email} requested verification.`,
-      user: existing_user ? existing_user._id : user._id,
+      info: `User ${user.email} requested verification.`,
+      user: user._id,
       status: "success",
     });
     return res.status(200).json({
@@ -93,12 +99,13 @@ const verify_user = async (req, res) => {
     return res.status(500).json({ error: "Error: " + error.message });
   }
 };
+
 const logout_user = async (req, res) => {
   try {
     res.clearCookie("token");
     await Activity.create({
       type: "logout",
-      info: `User: ${req.user.email} logged out.`,
+      info: `User ${req.user.email} logged out.`,
       user: req.user._id,
       status: "success",
     });
