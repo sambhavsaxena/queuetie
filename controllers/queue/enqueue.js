@@ -1,5 +1,6 @@
 import produce_email_enqueue_job from "../../core/producer.js";
 import Keys from "../../models/keys.js";
+import Activity from "../../models/activity.js";
 
 const enqueue_controller = async (req, res) => {
   try {
@@ -35,6 +36,12 @@ const enqueue_controller = async (req, res) => {
     );
     keyObj.limit -= 1;
     await keysDoc.save();
+    await Activity.create({
+      type: "enqueue",
+      info: `Enqueued email to ${email}`,
+      user: user._id,
+      status: "success",
+    });
     return res
       .status(201)
       .send({ status: "success", id: id });

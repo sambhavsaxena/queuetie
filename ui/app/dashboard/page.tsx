@@ -37,12 +37,6 @@ export default function DashboardPage() {
         <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-semibold text-lg">Recent Activity</h2>
-            <Link
-              href="/dashboard/activity"
-              className="text-sm text-primary hover:underline"
-            >
-              View all
-            </Link>
           </div>
           <RecentActivity />
         </div>

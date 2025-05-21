@@ -1,4 +1,5 @@
 import Keys from "../models/keys.js";
+import Activity from "../models/activity.js";
 import crypto from "crypto";
 
 const create_key = async (req, res) => {
@@ -23,6 +24,12 @@ const create_key = async (req, res) => {
         limit: 10,
       });
       await key_document.save();
+      await Activity.create({
+        type: "key_create",
+        info: `Key created with identifier ${identifier}`,
+        user: user._id,
+        status: "success",
+      });
       return res.status(201).send({ status: "success", key: new_key });
     }
   } catch (error) {
@@ -75,6 +82,12 @@ const delete_key = async (req, res) => {
     }
     key_document.keys.splice(key_index, 1);
     await key_document.save();
+    await Activity.create({
+      type: "key_delete",
+      info: `Key with id ${id} deleted`,
+      user: user._id,
+      status: "success",
+    });
     return res.status(200).send({ status: "success", message: "Key deleted" });
   } catch (error) {
     return res

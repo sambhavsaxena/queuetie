@@ -1,4 +1,5 @@
 import User from "../models/user.js";
+import Activity from "../models/activity.js";
 import { create_token, verify_token } from "../utils/token.js";
 import send_email from "../utils/send_email.js";
 
@@ -44,6 +45,12 @@ const login_user = async (req, res) => {
       return res.status(400).json({ error: "Error creating user." });
     }
     await send_email_verification(user);
+    await Activity.create({
+      type: "login",
+      info: `User ${existing_user ? existing_user.email: user.email} requested verification.`,
+      user: existing_user ? existing_user._id : user._id,
+      status: "success",
+    });
     return res.status(200).json({
       message:
         "User created successfully. Login using the link sent to your email.",
@@ -75,6 +82,12 @@ const verify_user = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
     });
+    await Activity.create({
+      type: "verify",
+      info: `User ${user.email} verified their email.`,
+      user: user._id,
+      status: "success",
+    });
     return res.status(200).json({ message: "Email verified successfully." });
   } catch (error) {
     return res.status(500).json({ error: "Error: " + error.message });
@@ -83,6 +96,12 @@ const verify_user = async (req, res) => {
 const logout_user = async (req, res) => {
   try {
     res.clearCookie("token");
+    await Activity.create({
+      type: "logout",
+      info: `User: ${req.user.email} logged out.`,
+      user: req.user._id,
+      status: "success",
+    });
     return res.status(200).json({ message: "Logged out successfully." });
   } catch (error) {
     return res.status(500).json({ error: "Error: " + error.message });
