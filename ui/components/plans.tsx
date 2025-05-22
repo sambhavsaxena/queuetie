@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
 declare global {
@@ -25,19 +25,21 @@ export interface PaymentProps {
 }
 
 export default function Payment({ plan }: PaymentProps) {
+  const router = useRouter();
   const [status, setStatus] = useState("");
   const { toast } = useToast();
+
   useEffect(() => {
     const handlePayment = async (plan: string) => {
       const res = await loadRazorpayScript();
       if (!res) return alert("Razorpay SDK failed to load");
+
       const data = await fetch("/api/payment/razorpay", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({plan: plan}),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
       }).then((t) => t.json());
+
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         currency: data.currency,
@@ -46,46 +48,64 @@ export default function Payment({ plan }: PaymentProps) {
         name: "Queuetie",
         description: `Payment for ${plan} plan`,
         handler: function (response: any) {
-          if (response.razorpay_payment_id) {
-            toast({
-              title: "Success",
-              description: `Payment successful. Transaction ID: ${response.razorpay_payment_id}`,
-              variant: "default",
-            });
-            setStatus("success");
-          } else {
-            toast({
-              title: "Error",
-              description: response.error || "Transaction failed.",
-              variant: "destructive",
-            });
-            setStatus("failed");
-          }
+          toast({
+            title: "Success",
+            description: `Payment successful. Transaction ID: ${response.razorpay_payment_id}`,
+            variant: "default",
+          });
+          setStatus("success");
         },
         prefill: {
           name: "",
           email: "",
           contact: "",
         },
+        modal: {
+          ondismiss: function () {
+            toast({
+              title: "Cancelled",
+              description: "Payment popup was closed.",
+              variant: "destructive",
+            });
+            setStatus("cancelled");
+            router.push("/pricing")
+          },
+        },
       };
+      console.log(options)
       const paymentObject = new window.Razorpay(options);
+      paymentObject.on("payment.failed", function (response: any) {
+        toast({
+          title: "Payment Failed",
+          description: response.error.description || "Transaction failed.",
+          variant: "destructive",
+        });
+        setStatus("failed");
+        router.push("/pricing");
+        
+      });
+
       paymentObject.open();
     };
-    handlePayment(plan);
-  }, [toast, plan]);
 
-  if(status === "success") {
-    redirect("/dashboard");
-  }
-  else if (status === "failed") {
-    redirect("/pricing")
+    handlePayment(plan);
+  }, [router, toast, plan]);
+
+  if (status === "success") {
+    router.push("/dashboard");
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      {
-        status === "" ? <p>Awaiting payment confirmation...</p> : <p>Redirecting...</p>
-      }
+      {status === "" ? (
+        <p>Awaiting payment confirmation...</p>
+      ) : status === "cancelled" ? (
+        <p>Payment cancelled by user.</p>
+      ) : status === "failed" ? (
+        <p>Payment failed. Please try again.</p>
+      ) : (
+        <p>Redirecting...</p>
+      )}
     </div>
   );
 }
