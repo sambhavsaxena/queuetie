@@ -9,29 +9,52 @@ import { Check } from "lucide-react";
 const plans = [
   {
     name: "Free",
-    price: "$0",
+    price: "₹0",
     mails: "50 mails/month",
-    features: [
-      "Basic email support",
-      "Access to dashboard",
-      "Community support",
-    ],
+    features: ["Dashboard access", "Basic email support", "Community support"],
     cta: "Get Started",
-    url: "/login",
+    url: "/dashboard",
   },
   {
-    name: "Pro",
-    price: "$20",
-    mails: "5,000 mails/month",
-    features: ["Priority support", "API access", "Analytics"],
+    name: "Beginner",
+    price: "₹1,000",
+    mails: "10k mails/month",
+    features: [
+      "Dashboard access",
+      "API access",
+      "Basic analytics",
+      "Priority support",
+    ],
     cta: "Subscribe",
-    url: "/contact",
+    url: "/checkout?plan=Beginner",
+  },
+  {
+    name: "Professional",
+    price: "₹10,000",
+    mails: "100k mails/month",
+    features: [
+      "Dashboard access",
+      "API access",
+      "Advanced analytics",
+      "Custom integrations",
+      "Dedicated support",
+    ],
+    cta: "Subscribe",
+    url: "/checkout?plan=Professional",
   },
   {
     name: "Enterprise",
-    price: "$200",
-    mails: "100,000 mails/month",
-    features: ["Dedicated support", "Custom integrations", "SLAs"],
+    price: "₹xxxx",
+    mails: "Upto 10M mails/month",
+    features: [
+      "Dashboard access",
+      "API access",
+      "Advanced analytics",
+      "Custom integrations",
+      "Dedicated support",
+      "Feature requests",
+      "SLAs",
+    ],
     cta: "Contact Sales",
     url: "/contact",
   },
@@ -50,22 +73,24 @@ export default function PricingPage() {
         <p className="text-center mb-12">
           Simple pricing for everyone. No hidden fees.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {plans.map((plan) => (
             <Card key={plan.name} className="border border-gray-800">
-              <CardContent className="p-6">
-                <h2 className="text-2xl font-semibold mb-2">{plan.name}</h2>
-                <p className="text-3xl font-bold mb-1">{plan.price}</p>
-                <p className="text-sm text-gray-400 mb-4">{plan.mails}</p>
-                <ul className="mb-6 space-y-2">
-                  {plan.features.map((feature, index) => (
-                    <li key={index} className="flex items-center">
-                      <Check className="w-4 h-4 text-green-500 mr-2" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Link href={plan.url}>
+              <CardContent className="p-6 flex flex-col h-full">
+                <div>
+                  <h2 className="text-2xl font-semibold mb-2">{plan.name}</h2>
+                  <p className="text-3xl font-bold mb-1">{plan.price}</p>
+                  <p className="text-sm text-gray-400 mb-4">{plan.mails}</p>
+                  <ul className="mb-6 space-y-2">
+                    {plan.features.map((feature, index) => (
+                      <li key={index} className="flex items-center">
+                        <Check className="w-4 h-4 text-green-500 mr-2" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <Link href={plan.url} className="mt-auto">
                   <Button className="w-full">{plan.cta}</Button>
                 </Link>
               </CardContent>
