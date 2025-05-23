@@ -5,28 +5,12 @@ import User from "../../models/user.js"
 import Keys from "../../models/keys.js";
 import Activity from "../../models/activity.js"
 import produce_email_enqueue_job from "../../core/producer.js";
+import PLANS from "../../constants/plans.js"
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
-
-const plan_prices = {
-  Beginner: 1 * 100,
-  Professional: 2 * 100
-};
-
-const plan_quota = {
-  Beginner: 10000,
-  Professional: 100000
-};
-
-const plan_rank = {
-  Free: 1,
-  Beginner: 2,
-  Professional: 3,
-  Enterprise: 4
-}
 
 const create_order = async (req, res) => {
   const { user } = req;
@@ -37,10 +21,10 @@ const create_order = async (req, res) => {
   if (!plan) {
     return res.status(400).json({ error: "Please provide a plan" });
   }
-  if (plan_rank[plan] <= plan_rank[user.subscription]) {
+  if (PLANS[plan].rank <= PLANS[user.subscription].rank) {
     return res.status(400).json({ error: `User already subscribed to ${user.subscription} plan.` });
   }
-  const amount = plan_prices[plan];
+  const amount = PLANS[plan].price;
   if (!amount) {
     return res.status(400).json({ error: "Invalid plan" });
   }
@@ -103,7 +87,7 @@ const set_order_active = async (req, res) => {
     subscription.signature = transaction.razorpay_signature;
 
     key_document.used_quota = 0;
-    key_document.max_quota = plan_quota[subscription_plan];
+    key_document.max_quota = PLANS[subscription_plan].quota;
     user_to_activate.subscription = subscription_plan;
 
     await subscription.save();

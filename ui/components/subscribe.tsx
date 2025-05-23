@@ -78,7 +78,7 @@ export default function Payment({ plan }: PaymentProps) {
           !data.amount ||
           !data.currency
         ) {
-          throw new Error(data?.error || "Invalid response from server");
+          throw new Error(data?.error || "Invalid plan selected");
         }
       } catch (err: any) {
         toast({
@@ -105,7 +105,6 @@ export default function Payment({ plan }: PaymentProps) {
             description: `Payment successful. Transaction ID: ${response.razorpay_payment_id}`,
             variant: "default",
           });
-
           const result = await activate_order(data._id, plan, response);
           if (result.error) {
             toast({
@@ -120,7 +119,6 @@ export default function Payment({ plan }: PaymentProps) {
               variant: "success",
             });
           }
-
           setStatus("success");
         },
         prefill: {
@@ -160,6 +158,7 @@ export default function Payment({ plan }: PaymentProps) {
 
   useEffect(() => {
     if (status === "success") {
+      router.refresh();
       router.push("/dashboard");
     }
   }, [status, router]);
