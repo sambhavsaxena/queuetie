@@ -1,7 +1,7 @@
-import { TokensList } from '@/components/dashboard/tokens/tokens-list'
-import { Button } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
-import Link from 'next/link'
+import { TokensList } from "@/components/dashboard/tokens/tokens-list";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 
 export default function TokensPage() {
   return (
@@ -13,7 +13,6 @@ export default function TokensPage() {
             Create and manage your API tokens
           </p>
         </div>
-        
         <Link href="/dashboard/tokens/new">
           <Button className="gap-1">
             <Plus className="h-4 w-4" />
@@ -21,10 +20,9 @@ export default function TokensPage() {
           </Button>
         </Link>
       </div>
-      
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm">
         <TokensList />
       </div>
     </div>
-  )
+  );
 }

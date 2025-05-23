@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Queuetie",
-  description: "An open source email queueing system for your production environments.",
+  description: "An email queue management platform for your production environments.",
 };
 
 export default function RootLayout({

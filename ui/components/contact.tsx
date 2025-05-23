@@ -70,7 +70,6 @@ export default function Contact() {
               </div>
             </div>
           </div>
-
           {isSubmitted ? (
             <div className="text-center py-10">
               <div className="bg-primary/10 p-4 rounded-full mx-auto w-16 h-16 flex items-center justify-center mb-6">

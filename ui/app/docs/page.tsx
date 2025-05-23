@@ -7,15 +7,15 @@ import { cookies } from "next/headers";
 export const metadata: Metadata = {
   title: "Documentation - Queuetie",
   description:
-    "API documentation for Queuetie - An open source email queueing system for your production environments.",
+    "API documentation for Queuetie - An email queue management platform for your production environments.",
 };
 
 export default function DocsPage() {
   const token = cookies().get("token")?.value ?? "";
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex flex-col">
       <Header token={token} />
-      <main className="flex-1 container py-12">
+      <main className="flex-1 min-h-screen container py-12">
         <ApiDocs />
       </main>
       <Footer />

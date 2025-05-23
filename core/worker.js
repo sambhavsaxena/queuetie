@@ -36,17 +36,17 @@ export const email_worker = new Worker(
     });
 
     console.log(`Processing job ${job.id}: ${job.name}`);
-    const mailOptions = {
+    const mail_options = {
       from: `"Queuetie" <${from_user}>`,
       to,
       subject,
       html: body,
     };
     if (attachments && Array.isArray(attachments)) {
-      mailOptions.attachments = attachments;
+      mail_options.attachments = attachments;
     }
 
-    const info = await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mail_options);
     console.log(`Email sent: ${info.messageId}`);
     return { success: true, messageId: info.messageId };
   },

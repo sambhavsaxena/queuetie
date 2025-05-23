@@ -21,15 +21,17 @@ export const initialize_connections = async () => {
     password: REDIS_PASSWORD,
     tls: { rejectUnauthorized: true },
     maxRetriesPerRequest: 5,
-    retryStrategy: (times) => Math.min(times * 100, 3000),
-    enableReadyCheck: false,
+    retryStrategy: (times) => {
+      console.log("Retry attempt:", times);
+      return Math.min(times * 100, 3000);
+    },
+    enableReadyCheck: true,
   });
-  redis_connection.on("error", (err) =>
-    console.error("Redis connection error:", err)
-  );
-  redis_connection.on("connect", () =>
-    console.log("Redis connected: ", redis_connection.options.host)
-  );
+
+  redis_connection.on("connect", () => console.log("Redis connected"));
+  redis_connection.on("ready", () => console.log("Redis ready"));
+  redis_connection.on("end", () => console.log("Redis connection closed"));
+  redis_connection.on("error", (err) => console.error("Redis error:", err));
 
   email_queue = new Queue("email-queue", {
     connection: redis_connection.duplicate(),

@@ -8,7 +8,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header token={token} />
-      <main className="flex-1 flex items-center justify-center py-12">
+      <main className="flex-1 flex items-center min-h-screen justify-center py-12">
         <Contact />
       </main>
       <Footer />

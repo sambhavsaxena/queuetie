@@ -1,2 +1,2 @@
 # queueazy
-An open source email queueing system for your production environments.
+An email queue management platform for your production environments.

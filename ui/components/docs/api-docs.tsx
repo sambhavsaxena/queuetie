@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { CopyBlock, dracula } from 'react-code-blocks'
+import { CopyBlock, codepen } from 'react-code-blocks'
 import { cn } from '@/lib/utils'
 
 export function ApiDocs() {
@@ -206,7 +206,7 @@ function SendingEmailsSection() {
   }
 }`}
             language="json"
-            theme={dracula}
+            theme={codepen}
             codeBlock
             showLineNumbers={false}
           />
@@ -246,7 +246,7 @@ function AttachmentsSection() {
   ]
 }`}
             language="json"
-            theme={dracula}
+            theme={codepen}
             codeBlock
             showLineNumbers={false}
           />
@@ -327,7 +327,7 @@ function ErrorHandlingSection() {
   }
 }`}
             language="json"
-            theme={dracula}
+            theme={codepen}
             codeBlock
             showLineNumbers={false}
           />
@@ -438,7 +438,7 @@ const sendEmail = async () => {
 
 sendEmail().catch(console.error);`}
               language="javascript"
-              theme={dracula}
+              theme={codepen}
               codeBlock
               showLineNumbers={false}
             />
@@ -467,7 +467,7 @@ response = requests.post(url, json=payload, headers=headers)
 data = response.json()
 print(data)`}
               language="python"
-              theme={dracula}
+              theme={codepen}
               codeBlock
               showLineNumbers={false}
             />
@@ -501,7 +501,7 @@ $result = file_get_contents($url, false, $context);
 print_r(json_decode($result));
 ?>`}
               language="php"
-              theme={dracula}
+              theme={codepen}
               codeBlock
               showLineNumbers={false}
             />
@@ -536,7 +536,7 @@ request.body = payload.to_json
 response = http.request(request)
 puts JSON.parse(response.body)`}
               language="ruby"
-              theme={dracula}
+              theme={codepen}
               codeBlock
               showLineNumbers={false}
             />
@@ -558,7 +558,7 @@ puts JSON.parse(response.body)`}
     "attachments": []
   }'`}
               language="bash"
-              theme={dracula}
+              theme={codepen}
               codeBlock
               showLineNumbers={false}
             />

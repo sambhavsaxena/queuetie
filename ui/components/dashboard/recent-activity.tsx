@@ -42,7 +42,10 @@ export function RecentActivity() {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await fetch("/api/activity");
+        const response = await fetch("/api/activity", {
+          method: "GET",
+          credentials: "include"
+        });
         if (!response.ok) {
           throw new Error("Failed to fetch activities");
         }

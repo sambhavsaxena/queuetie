@@ -10,12 +10,12 @@ export default function LoginPage() {
     redirect("/dashboard");
   }
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex flex-col">
       <Header token={token} />
-      <main className="flex-1 flex items-center justify-center py-12">
+      <main className="flex-1 flex items-center min-h-screen justify-center">
         <div className="w-full max-w-md px-4">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2">Namaste 🙏🏻</h1>
+            <h1 className="text-3xl font-bold mb-2">Welcome!</h1>
             <p className="text-muted-foreground">
               Access your Queuetie account
             </p>

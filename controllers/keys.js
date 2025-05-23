@@ -7,7 +7,7 @@ const create_key = async (req, res) => {
     const { user } = req;
     const { identifier } = req.body;
     if (!user) {
-      return res.status(401).send({ error: "Unauthorized" });
+      return res.status(401).json({ error: "Unauthorized" });
     }
     const new_key = "qt_" + crypto.randomBytes(16).toString("hex");
     let key_document = await Keys.findOne({ user: user._id });
@@ -22,7 +22,7 @@ const create_key = async (req, res) => {
         user: user._id,
         status: "success",
       });
-      return res.status(201).send({ status: "success", key: new_key });
+      return res.status(201).json({ status: "success", key: new_key });
     } else {
       key_document.keys.push({
         identifier: identifier,
@@ -35,12 +35,12 @@ const create_key = async (req, res) => {
         user: user._id,
         status: "success",
       });
-      return res.status(201).send({ status: "success", key: new_key });
+      return res.status(201).json({ status: "success", key: new_key });
     }
   } catch (error) {
     return res
       .status(500)
-      .send({ error: "Key creation failed: " + error.message });
+      .json({ error: "Key creation failed: " + error.message });
   }
 };
 
@@ -48,11 +48,11 @@ const get_keys = async (req, res) => {
   try {
     const { user } = req;
     if (!user) {
-      return res.status(401).send({ error: "Unauthorized" });
+      return res.status(401).json({ error: "Unauthorized" });
     }
     const key_document = await Keys.findOne({ user: user._id });
     if (!key_document) {
-      return res.status(404).send({ error: "No keys found" });
+      return res.status(404).json({ error: "No keys found" });
     }
     const keys = key_document.keys.map((key) => ({
       id: key.id,
@@ -61,11 +61,11 @@ const get_keys = async (req, res) => {
       createdAt: key.createdAt,
       updatedAt: key.updatedAt,
     }));
-    return res.status(200).send({ tokens: keys });
+    return res.status(200).json({ tokens: keys });
   } catch (error) {
     return res
       .status(500)
-      .send({ error: "Key retrieval failed: " + error.message });
+      .json({ error: "Key retrieval failed: " + error.message });
   }
 };
 
@@ -74,15 +74,15 @@ const delete_key = async (req, res) => {
     const { user } = req;
     const { id } = req.params;
     if (!user) {
-      return res.status(401).send({ error: "Unauthorized" });
+      return res.status(401).json({ error: "Unauthorized" });
     }
     const key_document = await Keys.findOne({ user: user._id });
     if (!key_document) {
-      return res.status(404).send({ error: "No keys found" });
+      return res.status(404).json({ error: "No keys found" });
     }
     const key_index = key_document.keys.findIndex((key) => key.id == id);
     if (key_index === -1) {
-      return res.status(404).send({ error: "Key not found" });
+      return res.status(404).json({ error: "Key not found" });
     }
     key_document.keys.splice(key_index, 1);
     await key_document.save();
@@ -92,11 +92,11 @@ const delete_key = async (req, res) => {
       user: user._id,
       status: "success",
     });
-    return res.status(200).send({ status: "success", message: "Key deleted" });
+    return res.status(200).json({ status: "success", message: "Key deleted" });
   } catch (error) {
     return res
       .status(500)
-      .send({ error: "Key deletion failed: " + error.message });
+      .json({ error: "Key deletion failed: " + error.message });
   }
 };
 

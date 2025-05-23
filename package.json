@@ -1,7 +1,7 @@
 {
   "name": "queueazy",
   "version": "1.0.0",
-  "description": "An open source adaptable alternative to Amazon's SQS",
+  "description": "An email queueing system for your production environments.",
   "main": "index.js",
   "type": "module",
   "scripts": {

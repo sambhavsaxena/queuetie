@@ -19,7 +19,10 @@ export function DashboardStats() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/analytics");
+        const res = await fetch("/api/analytics", {
+          method: "GET",
+          credentials: "include"
+        });
         if (!res.ok) {
           throw new Error("Failed to fetch data");
         }

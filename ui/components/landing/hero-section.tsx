@@ -4,14 +4,14 @@ import { ArrowRight, Unplug, Zap, Shield } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="relative py-20 md:py-28">
+    <section className="relative py-20 md:py-28 min-h-screen">
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute left-1/3 top-1/4 -z-10 h-[30rem] w-[30rem] rounded-full bg-gradient-to-r from-purple-600/20 to-indigo-600/20 blur-[128px]" />
         <div className="absolute right-1/3 bottom-1/4 -z-10 h-[30rem] w-[30rem] rounded-full bg-gradient-to-l from-blue-600/20 to-cyan-600/20 blur-[128px]" />
       </div>
 
       <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-10 text-center">
+        <div className="flex flex-col items-center justify-center space-y-10 text-center lg:mt-20">
           <div className="inline-flex items-center rounded-full border border-green-400 px-4 py-1 text-sm font-semibold text-green-800 backdrop-blur">
             <span className="relative flex h-2 w-2 mr-2">
               <span className="absolute inline-flex h-full w-full rounded-full bg-gradient-to-tr from-green-300 to-green-600 opacity-80 animate-ping"></span>
@@ -34,7 +34,7 @@ export function HeroSection() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4 my-20">
             <Link href="/login">
                 <Button
                 size="lg"

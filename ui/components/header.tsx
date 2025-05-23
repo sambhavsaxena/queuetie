@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -14,6 +14,19 @@ interface HeaderProps {
 
 export function Header({ token }: HeaderProps) {
   const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [subscription, setSubscription] = useState<string | null>(null);
+  useEffect(() => {
+    if (token) {
+      fetch("/api/user/get", { credentials: "include" })
+        .then((res) => res.json())
+        .then((data) => {
+          setSubscription(data?.user?.subscription);
+        })
+        .catch((err) => console.error("Failed to fetch user", err));
+    }
+  }, [router, token]);
+
   const handleLogout = () => {
     fetch("/api/user/logout", {
       method: "POST",
@@ -29,7 +42,7 @@ export function Header({ token }: HeaderProps) {
         console.error("Logout failed", err);
       });
   };
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
@@ -51,12 +64,6 @@ export function Header({ token }: HeaderProps) {
           >
             Dashboard
           </Link>
-          <Link
-            href="/pricing"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Pricing
-          </Link>
         </nav>
         <div className="flex items-center gap-4">
           {!token ? (
@@ -73,7 +80,6 @@ export function Header({ token }: HeaderProps) {
             </div>
           )}
           <ModeToggle />
-
           <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
             <SheetTrigger asChild className="md:hidden">
               <Button variant="outline" size="icon">
@@ -89,13 +95,6 @@ export function Header({ token }: HeaderProps) {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Documentation
-                </Link>
-                <Link
-                  href="/pricing"
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Pricing
                 </Link>
                 <Link
                   href="/dashboard"

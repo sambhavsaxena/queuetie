@@ -1,17 +1,17 @@
 import User from "../models/user.js";
 import Activity from "../models/activity.js";
 import { create_token, verify_token } from "../utils/token.js";
-import send_email from "../utils/send_email.js";
+import produce_email_enqueue_job from "../core/producer.js";
 
 const send_email_verification = async (user) => {
   const token = create_token(user._id, "1h");
   const verification_url = `${process.env.FRONTEND_URL}/verify?token=${token}`;
   const message = `Hello ${user.email},\n\nPlease verify your email by clicking on the following link:\n\n${verification_url}\n\nIf you did not request this, please ignore this email.`;
   try {
-    const response = await send_email({
-      to: user.email,
+    const response = await produce_email_enqueue_job({
+      email: user.email,
       subject: "Verify your email",
-      text: message,
+      body: message,
     });
     if (!response) {
       return res.status(500).json({
@@ -46,6 +46,7 @@ const login_user = async (req, res) => {
     const user = await User.create({
       email,
       isVerified: false,
+      subscription: "Free"
     });
     if (!user) {
       return res.status(400).json({ error: "Error creating user." });
@@ -118,12 +119,12 @@ const logout_user = async (req, res) => {
 
 const update_user = async (req, res) => {
   try {
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const delete_user = async (req, res) => {
   try {
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export { login_user, verify_user, update_user, delete_user, logout_user };

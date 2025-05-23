@@ -1,7 +1,7 @@
 import { email_queue } from "./connections.js";
 const { MAIL_SMTP_SERVICE, MAIL_SMTP_USER, MAIL_SMTP_PASSWORD } = process.env;
 
-const produce_email_enqueue_job = async (email, subject, body, attachments) => {
+const produce_email_enqueue_job = async ({ email, subject, body, attachments }) => {
   try {
     const payload = {
       to: email,

@@ -7,7 +7,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header token={token} />
-      <main className="flex-1 flex items-center justify-center py-12">
+      <main className="flex-1 flex min-h-screen items-center justify-center py-12">
         <div className="w-full max-w-md px-4">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2">Blog</h1>

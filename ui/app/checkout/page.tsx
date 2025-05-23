@@ -1,7 +1,7 @@
 import { Header } from "@/components/header";
 import { Footer } from "@/components/layout/footer";
 import { cookies } from "next/headers";
-import Payment from "@/components/plans";
+import Payment from "@/components/subscribe";
 import { redirect } from "next/navigation";
 
 export default function PrivacyPage({

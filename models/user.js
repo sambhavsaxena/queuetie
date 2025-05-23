@@ -10,6 +10,11 @@ const schema = mongoose.Schema(
         isVerified: {
             type: Boolean,
             default: false,
+        },
+        subscription: {
+            type: String,
+            default: "Free",
+            enum: ["Free", "Beginner", "Professional", "Enterprise"],
         }
     },
     {

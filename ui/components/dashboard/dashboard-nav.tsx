@@ -12,7 +12,7 @@ import {
   ArrowUpNarrowWide
 } from "lucide-react";
 
-const navItems = [
+const nav_items = [
   {
     title: "Dashboard",
     href: "/dashboard",
@@ -50,7 +50,7 @@ export function DashboardNav() {
 
   return (
     <nav className="grid items-start gap-2 px-2">
-      {navItems.map((item, index) => {
+      {nav_items.map((item, index) => {
         const Icon = item.icon;
         return (
           <Link
