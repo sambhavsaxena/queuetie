@@ -3,6 +3,7 @@ import Razorpay from "razorpay";
 import Subscription from "../../models/subscription.js";
 import User from "../../models/user.js"
 import Keys from "../../models/keys.js";
+import Activity from "../../models/activity.js"
 import produce_email_enqueue_job from "../../core/producer.js";
 
 const razorpay = new Razorpay({
@@ -11,14 +12,21 @@ const razorpay = new Razorpay({
 });
 
 const plan_prices = {
-  Beginner: 1000 * 100,
-  Professional: 10000 * 100
+  Beginner: 1 * 100,
+  Professional: 2 * 100
 };
 
 const plan_quota = {
   Beginner: 10000,
   Professional: 100000
 };
+
+const plan_rank = {
+  Free: 1,
+  Beginner: 2,
+  Professional: 3,
+  Enterprise: 4
+}
 
 const create_order = async (req, res) => {
   const { user } = req;
@@ -28,6 +36,9 @@ const create_order = async (req, res) => {
   const { plan } = req.body;
   if (!plan) {
     return res.status(400).json({ error: "Please provide a plan" });
+  }
+  if (plan_rank[plan] <= plan_rank[user.subscription]) {
+    return res.status(400).json({ error: `User already subscribed to ${user.subscription} plan.` });
   }
   const amount = plan_prices[plan];
   if (!amount) {
@@ -75,9 +86,16 @@ const set_order_active = async (req, res) => {
     }
 
     const user_to_activate = await User.findById(user._id);
-    const key_document = await Keys.findOne({
+    var key_document;
+    key_document = await Keys.findOne({
       user: user._id
     })
+    if (!key_document) {
+      key_document = await Keys.create({
+        user: user._id,
+        keys: [],
+      });
+    }
 
     subscription.isVerified = true;
     subscription.isActive = true;
@@ -90,6 +108,12 @@ const set_order_active = async (req, res) => {
 
     await subscription.save();
     await user_to_activate.save();
+    await Activity.create({
+      type: "subscribe",
+      info: `Subscription activated: ${subscription_plan}`,
+      user: user._id,
+      status: "success",
+    });
     await produce_email_enqueue_job({
       email: user.email,
       subject: `Your Queuetie account has been upgraded to ${subscription_plan}`,
@@ -101,10 +125,11 @@ const set_order_active = async (req, res) => {
       <br/><br/>
       Queuetie`
     });
-    return res.status(200).json({ message: "Subscription activated successfully" });
+    return res.status(200).json({ message: `Subscription activated for plan ${subscription_plan}.` });
   }
   catch (err) {
-    return res.status(500).json({ error: "Activating subscription failed: " + JSON.stringify(err) })
+    console.log(err)
+    return res.status(500).json({ error: "Activating subscription failed: " + err })
   }
 };
 

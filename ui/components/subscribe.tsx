@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-const loadRazorpayScript = () => {
+const loadRazorpayScript = (): Promise<boolean> => {
   return new Promise((resolve) => {
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -25,17 +25,21 @@ export interface PaymentProps {
 }
 
 const activate_order = async (
-  subscription_id: String,
-  subscription_plan: String,
+  subscription_id: string,
+  subscription_plan: string,
   transaction: any
 ) => {
-  const data = await fetch("/api/subscription/razorpay", {
-    method: "PUT",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ subscription_id, subscription_plan, transaction }),
-  }).then((t) => t.json());
-  return data;
+  try {
+    const res = await fetch("/api/subscription/razorpay", {
+      method: "PUT",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subscription_id, subscription_plan, transaction }),
+    });
+    return await res.json();
+  } catch (err) {
+    return { error: "Failed to activate subscription" };
+  }
 };
 
 export default function Payment({ plan }: PaymentProps) {
@@ -45,16 +49,48 @@ export default function Payment({ plan }: PaymentProps) {
 
   useEffect(() => {
     const handlePayment = async (plan: string) => {
-      const res = await loadRazorpayScript();
-      if (!res) return alert("Razorpay SDK failed to load");
+      const razorpayLoaded = await loadRazorpayScript();
+      if (!razorpayLoaded) {
+        toast({
+          title: "Error",
+          description: "Failed to load Razorpay SDK",
+          variant: "destructive",
+        });
+        router.push("/pricing");
+        return;
+      }
 
-      const data = await fetch("/api/subscription/razorpay", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan }),
-      }).then((t) => t.json());
+      let data: any;
 
+      try {
+        const res = await fetch("/api/subscription/razorpay", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan }),
+        });
+
+        data = await res.json();
+        if (
+          !res.ok ||
+          !data ||
+          !data.order_id ||
+          !data.amount ||
+          !data.currency
+        ) {
+          throw new Error(data?.error || "Invalid response from server");
+        }
+      } catch (err: any) {
+        toast({
+          title: "Error",
+          description: err.message || "Something went wrong",
+          variant: "destructive",
+        });
+        router.push("/pricing");
+        return;
+      }
+
+      const user = data.user || {};
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         currency: data.currency,
@@ -69,25 +105,27 @@ export default function Payment({ plan }: PaymentProps) {
             description: `Payment successful. Transaction ID: ${response.razorpay_payment_id}`,
             variant: "default",
           });
-          const res = await activate_order(data._id, plan, response);
-          if (res.error) {
+
+          const result = await activate_order(data._id, plan, response);
+          if (result.error) {
             toast({
-              title: "Activating subscription failed",
-              description: `${res.error}`,
+              title: "Subscription Activation Failed",
+              description: result.error,
               variant: "destructive",
             });
           } else {
             toast({
-              title: "Subscription activated",
-              description: `${res.message}`,
+              title: "Subscription Activated",
+              description: result.message || "Your subscription is now active.",
               variant: "success",
             });
           }
+
           setStatus("success");
         },
         prefill: {
-          name: data.user.id,
-          email: data.user.email,
+          name: user.id || "",
+          email: user.email || "",
           contact: "",
         },
         modal: {
@@ -102,11 +140,12 @@ export default function Payment({ plan }: PaymentProps) {
           },
         },
       };
+
       const paymentObject = new window.Razorpay(options);
       paymentObject.on("payment.failed", function (response: any) {
         toast({
           title: "Payment Failed",
-          description: response.error.description || "Transaction failed.",
+          description: response?.error?.description || "Transaction failed.",
           variant: "destructive",
         });
         setStatus("failed");
@@ -119,21 +158,18 @@ export default function Payment({ plan }: PaymentProps) {
     handlePayment(plan);
   }, [router, toast, plan]);
 
-  if (status === "success") {
-    router.push("/dashboard");
-  }
+  useEffect(() => {
+    if (status === "success") {
+      router.push("/dashboard");
+    }
+  }, [status, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      {status === "" ? (
-        <p>Awaiting payment confirmation...</p>
-      ) : status === "cancelled" ? (
-        <p>Payment cancelled by user.</p>
-      ) : status === "failed" ? (
-        <p>Payment failed. Please try again.</p>
-      ) : (
-        <p>Redirecting...</p>
-      )}
+      {status === "" && <p>Awaiting payment confirmation...</p>}
+      {status === "cancelled" && <p>Payment cancelled by user.</p>}
+      {status === "failed" && <p>Payment failed. Please try again.</p>}
+      {status === "success" && <p>Redirecting to dashboard...</p>}
     </div>
   );
 }

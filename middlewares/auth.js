@@ -10,6 +10,7 @@ const auth_middleware = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = await User.findById(decoded.id);
         if (!req.user) {
+            res.clearCookie("token");
             return res.status(401).json({ error: "Invalid request, token rejected." });
         }
         next();

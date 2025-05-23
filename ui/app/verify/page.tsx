@@ -8,7 +8,9 @@ import Image from "next/image";
 
 export default function VerifyPage() {
   const router = useRouter();
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("loading");
   const [message, setMessage] = useState<string>("Verifying your email...");
 
   const hasRun = useRef(false);

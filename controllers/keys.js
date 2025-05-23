@@ -12,17 +12,7 @@ const create_key = async (req, res) => {
     const new_key = "qt_" + crypto.randomBytes(16).toString("hex");
     let key_document = await Keys.findOne({ user: user._id });
     if (!key_document) {
-      key_document = await Keys.create({
-        user: user._id,
-        keys: [{ identifier: identifier, key: new_key }],
-      });
-      await Activity.create({
-        type: "key_create",
-        info: `Key created with identifier ${identifier}`,
-        user: user._id,
-        status: "success",
-      });
-      return res.status(201).json({ status: "success", key: new_key });
+      return res.status(400).json({ error: "Error creating keys, key document not found." })
     } else {
       key_document.keys.push({
         identifier: identifier,
@@ -54,14 +44,7 @@ const get_keys = async (req, res) => {
     if (!key_document) {
       return res.status(404).json({ error: "No keys found" });
     }
-    const keys = key_document.keys.map((key) => ({
-      id: key.id,
-      identifier: key.identifier,
-      key: key.key,
-      createdAt: key.createdAt,
-      updatedAt: key.updatedAt,
-    }));
-    return res.status(200).json({ tokens: keys });
+    return res.status(200).json({ tokens: key_document.keys });
   } catch (error) {
     return res
       .status(500)

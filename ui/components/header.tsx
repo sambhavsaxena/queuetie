@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Menu } from "lucide-react";
+import { Crown, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -48,7 +48,9 @@ export function Header({ token }: HeaderProps) {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold"> Queuetie </span>
+            <span className="text-xl font-bold">
+              {subscription !== "Free" && <Crown height={15} width={15} />}Queuetie
+            </span>
           </Link>
         </div>
         <nav className="hidden md:flex items-center gap-6">

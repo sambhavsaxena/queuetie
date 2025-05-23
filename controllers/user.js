@@ -2,11 +2,19 @@ import User from "../models/user.js";
 import Activity from "../models/activity.js";
 import { create_token, verify_token } from "../utils/token.js";
 import produce_email_enqueue_job from "../core/producer.js";
+import Keys from "../models/keys.js";
 
 const send_email_verification = async (user) => {
   const token = create_token(user._id, "1h");
   const verification_url = `${process.env.FRONTEND_URL}/verify?token=${token}`;
-  const message = `Hello ${user.email},\n\nPlease verify your email by clicking on the following link:\n\n${verification_url}\n\nIf you did not request this, please ignore this email.`;
+  const message = `Hi ${user.email},
+      <br/>You are receiving this mail because you have requested a verification to your Queuetie account.<br/>
+      Click <a href="${verification_url}">this</a> URL to login and verify your account.<br/>
+      If you haven't requested this verification, you can safely ignore this email.
+      <br/><br/>
+      Thank You.
+      <br/><br/>
+      Queuetie`
   try {
     const response = await produce_email_enqueue_job({
       email: user.email,
@@ -50,6 +58,12 @@ const login_user = async (req, res) => {
     });
     if (!user) {
       return res.status(400).json({ error: "Error creating user." });
+    }
+    const key_document = await Keys.create({
+      user: user._id
+    })
+    if (!key_document) {
+      return res.status(400).json({ error: "Error creating key document to the user." })
     }
     await send_email_verification(user);
     await Activity.create({

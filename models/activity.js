@@ -5,7 +5,7 @@ const schema = mongoose.Schema(
         type: {
             type: String,
             required: true,
-            enum: ["login", "logout", "verify", "key_delete", "key_create", "enqueue"],
+            enum: ["login", "logout", "verify", "key_delete", "key_create", "enqueue", "subscribe"],
         },
         info: {
             type: String,

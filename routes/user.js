@@ -7,7 +7,7 @@ const router = express.Router();
 router.route("/login").post(login_user);
 router.route("/logout").post(auth_middleware, logout_user);
 router.route("/get").get(auth_middleware, (req, res) => {
-  res.status(200).json({ message: "User authenticated", user: req.user });
+  return res.status(200).json({ message: "User authenticated", user: req.user });
 });
 router.route("/verify").post(verify_user);
 router.route("/update").put(auth_middleware, update_user);
