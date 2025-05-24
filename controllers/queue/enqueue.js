@@ -6,6 +6,8 @@ import User from "../../models/user.js";
 const enqueue_controller = async (req, res) => {
   try {
     const { key } = req.body;
+    const request_agent = req.headers['user-agent'] || '';
+    const is_browser_call = /Mozilla|Chrome|Safari|Firefox|Edge/.test(request_agent); // restricts API access over Free tier
     if (!key) {
       return res.status(401).json({
         error: `Unauthorized: Missing key`,
@@ -16,6 +18,11 @@ const enqueue_controller = async (req, res) => {
       return res.status(403).json({ error: "Key not found." });
     }
     const user = await User.findById(keys_document.user);
+    if (!is_browser_call && user.subscription === "Free") {
+      return res.status(405).json({
+        error: "API access unavailable over your current plan."
+      })
+    }
     if (!user) {
       return res.status(403).json({ error: "User not found." });
     }
