@@ -21,4 +21,4 @@ const verify_token = (token) => {
     }
 }
 
-export {create_token, verify_token};
+export { create_token, verify_token };

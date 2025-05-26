@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { LockKeyholeOpen } from "lucide-react";
@@ -13,12 +13,7 @@ export default function VerifyPage() {
   >("loading");
   const [message, setMessage] = useState<string>("Verifying your email...");
 
-  const hasRun = useRef(false);
-
   useEffect(() => {
-    if (hasRun.current) return;
-    hasRun.current = true;
-
     let token: string | null = null;
     if (typeof window !== "undefined") {
       token = new URL(window.location.href).searchParams.get("token");
@@ -70,8 +65,7 @@ export default function VerifyPage() {
     };
 
     verify();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router]);
 
   const spinner = (
     <span className="relative flex items-center">

@@ -30,7 +30,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <DashboardStats />
+        <DashboardStats token={token} />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

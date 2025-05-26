@@ -29,18 +29,17 @@ app.use(express.json());
 app.use(cookieParser());
 app.disable("x-powered-by"); // hides our deployment stack
 
-app.use("/api/queue", queue_routes);
+app.get("/", (req, res) => {
+  return res.status(200).json({ message: "Server is healthy" });
+});
 app.use("/api/user", user_routes);
 app.use('/api/keys', keys_routes);
 app.use('/api/activity', activity_routes);
 app.use('/api/analytics', analytics_routes);
 app.use('/api/subscription', subscription_routes);
+app.use("/api/queue", queue_routes);
 app.use(not_found);
 app.use(error_handler);
-
-app.get("/", (req, res) => {
-  return res.status(200).json({ message: "Server is healthy" });
-});
 
 process.on("SIGTERM", async () => {
   await close_connections();

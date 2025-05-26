@@ -11,7 +11,11 @@ type Data = {
   total_keys: number;
 };
 
-export function DashboardStats() {
+interface HeaderProps {
+  token: string;
+}
+
+export function DashboardStats({ token }: HeaderProps) {
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +25,11 @@ export function DashboardStats() {
       try {
         const res = await fetch("/api/analytics", {
           method: "GET",
-          credentials: "include"
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+          credentials: "include",
         });
         if (!res.ok) {
           throw new Error("Failed to fetch data");
@@ -92,7 +100,9 @@ export function DashboardStats() {
     {
       title: "API Keys created",
       value: `${data.total_keys}`,
-      description: `You have created ${data.total_keys} API key${data.total_keys > 1 ? "s" : ""}`,
+      description: `You have created ${data.total_keys} API key${
+        data.total_keys > 1 ? "s" : ""
+      }`,
       trend: data.total_keys > 5 ? "down" : "up",
       icon: Check,
     },

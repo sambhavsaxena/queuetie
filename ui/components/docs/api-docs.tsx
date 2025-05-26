@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { CopyBlock, codepen } from 'react-code-blocks'
-import { cn } from '@/lib/utils'
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CopyBlock, codepen } from "react-code-blocks";
+import { cn } from "@/lib/utils";
 
 export function ApiDocs() {
-  const [activeTab, setActiveTab] = useState('overview')
-  
+  const [activeTab, setActiveTab] = useState("overview");
+
   return (
     <div className="space-y-12">
       <div className="space-y-4">
@@ -16,14 +16,13 @@ export function ApiDocs() {
           Everything you need to integrate with the Queuetie email API
         </p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
-        {/* Sidebar Navigation */}
         <aside className="space-y-6">
           <div className="space-y-2">
             <h3 className="text-lg font-semibold">Navigation</h3>
             <nav className="space-y-1">
-              {docNavItems.map((item) => (
+              {documentation_nav.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
@@ -40,59 +39,62 @@ export function ApiDocs() {
             </nav>
           </div>
         </aside>
-        
-        {/* Main Content */}
         <div className="space-y-8">
-          {activeTab === 'overview' && <OverviewSection />}
-          {activeTab === 'authentication' && <AuthenticationSection />}
-          {activeTab === 'sending-emails' && <SendingEmailsSection />}
-          {activeTab === 'attachments' && <AttachmentsSection />}
-          {activeTab === 'error-handling' && <ErrorHandlingSection />}
-          {activeTab === 'rate-limits' && <RateLimitsSection />}
-          {activeTab === 'examples' && <ExamplesSection />}
+          {activeTab === "overview" && <OverviewSection />}
+          {activeTab === "authentication" && <AuthenticationSection />}
+          {activeTab === "sending-emails" && <SendingEmailsSection />}
+          {activeTab === "attachments" && <AttachmentsSection />}
+          {activeTab === "error-handling" && <ErrorHandlingSection />}
+          {activeTab === "rate-limits" && <RateLimitsSection />}
+          {activeTab === "examples" && <ExamplesSection />}
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function OverviewSection() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Overview</h2>
-      
+
       <p className="text-lg text-muted-foreground">
-        Queuetie provides a simple and reliable API for sending emails through your applications.
-        Our RESTful API allows you to send emails with just a few lines of code.
+        Queuetie provides a simple and reliable API for sending emails through
+        your applications. Our RESTful API allows you to send emails with just a
+        few lines of code.
       </p>
-      
+
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">Base URL</h3>
-        <code className="rounded bg-muted px-2 py-1">https://api.queuetie.com/v1</code>
-        
+        <code className="rounded bg-muted px-2 py-1">
+          {process.env.NEXT_PUBLIC_API_URL}
+        </code>
+
         <h3 className="text-xl font-semibold pt-4">Content Type</h3>
-        <p>All requests should use JSON with the appropriate content type header:</p>
-        <code className="rounded bg-muted px-2 py-1">Content-Type: application/json</code>
-        
+        <p>
+          All requests should use JSON with the appropriate content type header:
+        </p>
+        <code className="rounded bg-muted px-2 py-1">
+          Content-Type: application/json
+        </code>
+
         <h3 className="text-xl font-semibold pt-4">API Resources</h3>
         <ul className="space-y-2 list-disc pl-6">
           <li>
-            <span className="font-medium">POST /send</span> - Send an email
+            <span className="font-medium">POST /queue/enqueue</span> - Create an email enqueue job
           </li>
           <li>
-            <span className="font-medium">GET /status/{'{id}'}</span> - Check email status
+            <span className="font-medium">POST /queue/status</span> - Check job completion status
           </li>
           <li>
-            <span className="font-medium">GET /usage</span> - Check account usage
+            <span className="font-medium">GET /analytics</span> - Check account usage
           </li>
         </ul>
       </div>
-      
+
       <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-6">
         <h3 className="text-xl font-semibold mb-2">Getting Started</h3>
-        <p className="mb-4">
-          To start using the Queuetie API, you need to:
-        </p>
+        <p className="mb-4">To start using the Queuetie API, you need to:</p>
         <ol className="space-y-2 list-decimal pl-6">
           <li>Create an account on Queuetie</li>
           <li>Generate an API token from the dashboard</li>
@@ -100,56 +102,66 @@ function OverviewSection() {
         </ol>
       </div>
     </div>
-  )
+  );
 }
 
 function AuthenticationSection() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Authentication</h2>
-      
+
       <p className="text-lg text-muted-foreground">
-        All API requests must be authenticated using an API token. Tokens can be generated
-        and managed from your dashboard.
+        All API requests must be authenticated using an API token. Tokens can be
+        generated and managed from your dashboard.
       </p>
-      
+
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">Authorization Header</h3>
-        <p>Include your API token in the Authorization header of each request:</p>
-        <code className="rounded bg-muted px-2 py-1">Authorization: Bearer YOUR_API_TOKEN</code>
-        
+        <p>
+          Include your API token in the Authorization header of each request:
+        </p>
+        <code className="rounded bg-muted px-2 py-1">
+          Authorization: Bearer YOUR_API_TOKEN
+        </code>
+
         <h3 className="text-xl font-semibold pt-4">Token Security</h3>
         <ul className="space-y-2 list-disc pl-6">
           <li>Keep your API tokens secret</li>
           <li>Don&apos;t expose tokens in client-side code</li>
-          <li>Use environment variables to store tokens in your applications</li>
+          <li>
+            Use environment variables to store tokens in your applications
+          </li>
           <li>Rotate tokens periodically for enhanced security</li>
         </ul>
       </div>
-      
+
       <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-6">
         <h3 className="text-xl font-semibold mb-2">Important</h3>
         <p>
-          Never share your API tokens or include them in client-side code. Always keep them secure and use server-side code to make API requests.
+          Never share your API tokens or include them in client-side code.
+          Always keep them secure and use server-side code to make API requests.
         </p>
       </div>
     </div>
-  )
+  );
 }
 
 function SendingEmailsSection() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Sending Emails</h2>
-      
+
       <p className="text-lg text-muted-foreground">
-        The primary function of the Queuetie API is to send emails. Use the /send endpoint with the required parameters.
+        The primary function of the Queuetie API is to send emails. Use the
+        /send endpoint with the required parameters.
       </p>
-      
+
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">Endpoint</h3>
-        <code className="rounded bg-muted px-2 py-1">POST https://api.queuetie.com/v1/send</code>
-        
+        <code className="rounded bg-muted px-2 py-1">
+          POST https://api.queuetie.com/v1/send
+        </code>
+
         <h3 className="text-xl font-semibold pt-4">Request Parameters</h3>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
@@ -189,10 +201,13 @@ function SendingEmailsSection() {
             </tbody>
           </table>
         </div>
-        
+
         <h3 className="text-xl font-semibold pt-4">Response</h3>
-        <p>A successful request will return a 200 OK response with details about the email:</p>
-        
+        <p>
+          A successful request will return a 200 OK response with details about
+          the email:
+        </p>
+
         <div className="mt-2">
           <CopyBlock
             text={`{
@@ -213,24 +228,26 @@ function SendingEmailsSection() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function AttachmentsSection() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Attachments</h2>
-      
+
       <p className="text-lg text-muted-foreground">
-        Queuetie supports sending emails with file attachments. Here&apos;s how to include attachments in your API requests.
+        Queuetie supports sending emails with file attachments. Here&apos;s how
+        to include attachments in your API requests.
       </p>
-      
+
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">Attachment Format</h3>
         <p>
-          Attachments are sent as base64-encoded strings within the attachments array. Each attachment needs a filename and content.
+          Attachments are sent as base64-encoded strings within the attachments
+          array. Each attachment needs a filename and content.
         </p>
-        
+
         <div className="mt-2">
           <CopyBlock
             text={`{
@@ -251,7 +268,7 @@ function AttachmentsSection() {
             showLineNumbers={false}
           />
         </div>
-        
+
         <h3 className="text-xl font-semibold pt-4">Attachment Limits</h3>
         <ul className="space-y-2 list-disc pl-6">
           <li>Maximum file size: 10MB per attachment</li>
@@ -260,18 +277,19 @@ function AttachmentsSection() {
         </ul>
       </div>
     </div>
-  )
+  );
 }
 
 function ErrorHandlingSection() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Error Handling</h2>
-      
+
       <p className="text-lg text-muted-foreground">
-        The Queuetie API uses conventional HTTP response codes to indicate the success or failure of an API request.
+        The Queuetie API uses conventional HTTP response codes to indicate the
+        success or failure of an API request.
       </p>
-      
+
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">HTTP Status Codes</h3>
         <div className="overflow-x-auto">
@@ -288,32 +306,50 @@ function ErrorHandlingSection() {
                 <td className="py-2 px-4">The request was successful</td>
               </tr>
               <tr className="border-b">
-                <td className="py-2 px-4 font-mono text-sm">400 - Bad Request</td>
-                <td className="py-2 px-4">The request was invalid or missing required parameters</td>
+                <td className="py-2 px-4 font-mono text-sm">
+                  400 - Bad Request
+                </td>
+                <td className="py-2 px-4">
+                  The request was invalid or missing required parameters
+                </td>
               </tr>
               <tr className="border-b">
-                <td className="py-2 px-4 font-mono text-sm">401 - Unauthorized</td>
+                <td className="py-2 px-4 font-mono text-sm">
+                  401 - Unauthorized
+                </td>
                 <td className="py-2 px-4">Invalid or missing API token</td>
               </tr>
               <tr className="border-b">
                 <td className="py-2 px-4 font-mono text-sm">403 - Forbidden</td>
-                <td className="py-2 px-4">The API token doesn&apos;t have permission for the requested action</td>
+                <td className="py-2 px-4">
+                  The API token doesn&apos;t have permission for the requested
+                  action
+                </td>
               </tr>
               <tr className="border-b">
-                <td className="py-2 px-4 font-mono text-sm">429 - Too Many Requests</td>
+                <td className="py-2 px-4 font-mono text-sm">
+                  429 - Too Many Requests
+                </td>
                 <td className="py-2 px-4">Rate limit exceeded</td>
               </tr>
               <tr>
-                <td className="py-2 px-4 font-mono text-sm">500 - Server Error</td>
-                <td className="py-2 px-4">Something went wrong on our server</td>
+                <td className="py-2 px-4 font-mono text-sm">
+                  500 - Server Error
+                </td>
+                <td className="py-2 px-4">
+                  Something went wrong on our server
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
-        
+
         <h3 className="text-xl font-semibold pt-4">Error Response Format</h3>
-        <p>Error responses include an error message and sometimes additional details:</p>
-        
+        <p>
+          Error responses include an error message and sometimes additional
+          details:
+        </p>
+
         <div className="mt-2">
           <CopyBlock
             text={`{
@@ -334,18 +370,19 @@ function ErrorHandlingSection() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function RateLimitsSection() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Rate Limits</h2>
-      
+
       <p className="text-lg text-muted-foreground">
-        To ensure reliable service for all users, the Queuetie API enforces rate limits on API requests.
+        To ensure reliable service for all users, the Queuetie API enforces rate
+        limits on API requests.
       </p>
-      
+
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">Default Rate Limits</h3>
         <ul className="space-y-2 list-disc pl-6">
@@ -353,12 +390,13 @@ function RateLimitsSection() {
           <li>10,000 requests per day</li>
           <li>100,000 emails per month (depending on your plan)</li>
         </ul>
-        
+
         <h3 className="text-xl font-semibold pt-4">Rate Limit Headers</h3>
         <p>
-          Each API response includes headers that provide information about your current rate limit status:
+          Each API response includes headers that provide information about your
+          current rate limit status:
         </p>
-        
+
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
@@ -369,41 +407,56 @@ function RateLimitsSection() {
             </thead>
             <tbody>
               <tr className="border-b">
-                <td className="py-2 px-4 font-mono text-sm">X-RateLimit-Limit</td>
-                <td className="py-2 px-4">The maximum number of requests allowed in the current period</td>
+                <td className="py-2 px-4 font-mono text-sm">
+                  X-RateLimit-Limit
+                </td>
+                <td className="py-2 px-4">
+                  The maximum number of requests allowed in the current period
+                </td>
               </tr>
               <tr className="border-b">
-                <td className="py-2 px-4 font-mono text-sm">X-RateLimit-Remaining</td>
-                <td className="py-2 px-4">The number of requests remaining in the current period</td>
+                <td className="py-2 px-4 font-mono text-sm">
+                  X-RateLimit-Remaining
+                </td>
+                <td className="py-2 px-4">
+                  The number of requests remaining in the current period
+                </td>
               </tr>
               <tr>
-                <td className="py-2 px-4 font-mono text-sm">X-RateLimit-Reset</td>
-                <td className="py-2 px-4">The time at which the current rate limit window resets (Unix timestamp)</td>
+                <td className="py-2 px-4 font-mono text-sm">
+                  X-RateLimit-Reset
+                </td>
+                <td className="py-2 px-4">
+                  The time at which the current rate limit window resets (Unix
+                  timestamp)
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-      
+
       <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-6">
         <h3 className="text-xl font-semibold mb-2">Pro Tip</h3>
         <p>
-          If you need higher rate limits, consider upgrading to our Business or Enterprise plans which offer increased quotas and dedicated support.
+          If you need higher rate limits, consider upgrading to our Business or
+          Enterprise plans which offer increased quotas and dedicated support.
         </p>
       </div>
     </div>
-  )
+  );
 }
 
 function ExamplesSection() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Code Examples</h2>
-      
+
       <p className="text-lg text-muted-foreground">
-        Here are examples of how to use the Queuetie API in various programming languages.
+        Here are examples of how to use the Queuetie API in various programming
+        languages.
       </p>
-      
+
       <Tabs defaultValue="javascript" className="space-y-4">
         <TabsList>
           <TabsTrigger value="javascript">JavaScript</TabsTrigger>
@@ -412,7 +465,7 @@ function ExamplesSection() {
           <TabsTrigger value="ruby">Ruby</TabsTrigger>
           <TabsTrigger value="curl">cURL</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="javascript" className="space-y-4">
           <h3 className="text-xl font-semibold">JavaScript (Node.js)</h3>
           <div className="rounded-xl border border-border/60 bg-card/30 p-4 backdrop-blur-sm">
@@ -444,7 +497,7 @@ sendEmail().catch(console.error);`}
             />
           </div>
         </TabsContent>
-        
+
         <TabsContent value="python" className="space-y-4">
           <h3 className="text-xl font-semibold">Python</h3>
           <div className="rounded-xl border border-border/60 bg-card/30 p-4 backdrop-blur-sm">
@@ -473,7 +526,7 @@ print(data)`}
             />
           </div>
         </TabsContent>
-        
+
         <TabsContent value="php" className="space-y-4">
           <h3 className="text-xl font-semibold">PHP</h3>
           <div className="rounded-xl border border-border/60 bg-card/30 p-4 backdrop-blur-sm">
@@ -507,7 +560,7 @@ print_r(json_decode($result));
             />
           </div>
         </TabsContent>
-        
+
         <TabsContent value="ruby" className="space-y-4">
           <h3 className="text-xl font-semibold">Ruby</h3>
           <div className="rounded-xl border border-border/60 bg-card/30 p-4 backdrop-blur-sm">
@@ -542,7 +595,7 @@ puts JSON.parse(response.body)`}
             />
           </div>
         </TabsContent>
-        
+
         <TabsContent value="curl" className="space-y-4">
           <h3 className="text-xl font-semibold">cURL</h3>
           <div className="rounded-xl border border-border/60 bg-card/30 p-4 backdrop-blur-sm">
@@ -566,16 +619,15 @@ puts JSON.parse(response.body)`}
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }
 
-// Navigation items for documentation
-const docNavItems = [
-  { id: 'overview', title: 'Overview' },
-  { id: 'authentication', title: 'Authentication' },
-  { id: 'sending-emails', title: 'Sending Emails' },
-  { id: 'attachments', title: 'Attachments' },
-  { id: 'error-handling', title: 'Error Handling' },
-  { id: 'rate-limits', title: 'Rate Limits' },
-  { id: 'examples', title: 'Code Examples' },
-]
+const documentation_nav = [
+  { id: "overview", title: "Overview" },
+  { id: "authentication", title: "Authentication" },
+  { id: "sending-emails", title: "Sending Emails" },
+  { id: "attachments", title: "Attachments" },
+  { id: "error-handling", title: "Error Handling" },
+  { id: "rate-limits", title: "Rate Limits" },
+  { id: "examples", title: "Code Examples" },
+];

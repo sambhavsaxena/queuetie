@@ -107,9 +107,9 @@ export function PlaygroundForm() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${values.token}`
       },
       body: JSON.stringify({
-        key: values.token,
         email: values.to,
         subject: values.subject,
         body: values.body,

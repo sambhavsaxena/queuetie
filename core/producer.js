@@ -20,7 +20,7 @@ const produce_email_enqueue_job = async ({ email, subject, body, attachments }) 
         type: "exponential",
         delay: 5000,
       },
-      removeOnComplete: true,
+      removeOnComplete: false,
       removeOnFail: false,
     });
     return response.id;

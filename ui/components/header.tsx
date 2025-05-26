@@ -49,7 +49,7 @@ export function Header({ token }: HeaderProps) {
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-xl font-bold">
-              {subscription !== "Free" && <Crown height={15} width={15} />}Queuetie
+              {(subscription && subscription !== "Free") && <Crown height={15} width={15} className="text-yellow-500"/>}Queuetie
             </span>
           </Link>
         </div>
