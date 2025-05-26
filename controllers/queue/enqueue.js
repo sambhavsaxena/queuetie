@@ -4,7 +4,6 @@ import Activity from "../../models/activity.js";
 const enqueue_controller = async (req, res) => {
   try {
     const { user, keys_document } = req;
-
     const remaining_emails = keys_document.max_quota - keys_document.used_quota;
     if (remaining_emails <= 0) {
       return res.status(429).json({ error: "Usage quota exhausted." });

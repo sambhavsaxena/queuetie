@@ -42,7 +42,7 @@ export function ApiDocs() {
         <div className="space-y-8">
           {activeTab === "overview" && <OverviewSection />}
           {activeTab === "authentication" && <AuthenticationSection />}
-          {activeTab === "sending-emails" && <SendingEmailsSection />}
+          {activeTab === "enqueueing-emails" && <EnqueueingEmailsSection />}
           {activeTab === "attachments" && <AttachmentsSection />}
           {activeTab === "error-handling" && <ErrorHandlingSection />}
           {activeTab === "rate-limits" && <RateLimitsSection />}
@@ -59,9 +59,9 @@ function OverviewSection() {
       <h2 className="text-3xl font-bold">Overview</h2>
 
       <p className="text-lg text-muted-foreground">
-        Queuetie provides a simple and reliable API for sending emails through
-        your applications. Our RESTful API allows you to send emails with just a
-        few lines of code.
+        Queuetie provides a simple and reliable API for enqueueing emails
+        through your applications. Our RESTful API allows you to send emails
+        with just a few lines of code.
       </p>
 
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
@@ -81,13 +81,12 @@ function OverviewSection() {
         <h3 className="text-xl font-semibold pt-4">API Resources</h3>
         <ul className="space-y-2 list-disc pl-6">
           <li>
-            <span className="font-medium">POST /queue/enqueue</span> - Create an email enqueue job
+            <span className="font-medium">POST /queue/status</span> - Check job
+            completion status
           </li>
           <li>
-            <span className="font-medium">POST /queue/status</span> - Check job completion status
-          </li>
-          <li>
-            <span className="font-medium">GET /analytics</span> - Check account usage
+            <span className="font-medium">GET /analytics</span> - Check account
+            usage
           </li>
         </ul>
       </div>
@@ -146,20 +145,20 @@ function AuthenticationSection() {
   );
 }
 
-function SendingEmailsSection() {
+function EnqueueingEmailsSection() {
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold">Sending Emails</h2>
+      <h2 className="text-3xl font-bold">Enqueueing Emails</h2>
 
       <p className="text-lg text-muted-foreground">
-        The primary function of the Queuetie API is to send emails. Use the
-        /send endpoint with the required parameters.
+        The primary function of the Queuetie API is to enqueue emails. Use the
+        following endpoint with the required parameters.
       </p>
 
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">Endpoint</h3>
         <code className="rounded bg-muted px-2 py-1">
-          POST https://api.queuetie.com/v1/send
+          POST {process.env.NEXT_PUBLIC_API_URL}/queue/enqueue
         </code>
 
         <h3 className="text-xl font-semibold pt-4">Request Parameters</h3>
@@ -204,21 +203,15 @@ function SendingEmailsSection() {
 
         <h3 className="text-xl font-semibold pt-4">Response</h3>
         <p>
-          A successful request will return a 200 OK response with details about
-          the email:
+          A successful request will return a 201 OK response with details about
+          the job initialized:
         </p>
 
         <div className="mt-2">
           <CopyBlock
             text={`{
-  "success": true,
-  "message": "Email queued successfully",
-  "data": {
-    "id": "email_1a2b3c4d5e6f",
-    "to": "recipient@example.com",
-    "subject": "Hello from Queuetie API",
-    "queued_at": "2023-07-21T15:32:10.123Z"
-  }
+    "status": "success",
+    "id": "352"
 }`}
             language="json"
             theme={codepen}
@@ -237,8 +230,8 @@ function AttachmentsSection() {
       <h2 className="text-3xl font-bold">Attachments</h2>
 
       <p className="text-lg text-muted-foreground">
-        Queuetie supports sending emails with file attachments. Here&apos;s how
-        to include attachments in your API requests.
+        Queuetie supports enqueueing emails with file attachments. Here&apos;s
+        how to include attachments in your API requests.
       </p>
 
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
@@ -271,8 +264,8 @@ function AttachmentsSection() {
 
         <h3 className="text-xl font-semibold pt-4">Attachment Limits</h3>
         <ul className="space-y-2 list-disc pl-6">
-          <li>Maximum file size: 10MB per attachment</li>
-          <li>Maximum number of attachments: 10 per email</li>
+          <li>Maximum file size: 5MB per attachment</li>
+          <li>Maximum number of attachments: 2 per email</li>
           <li>Supported file types: PDF, images, documents, etc.</li>
         </ul>
       </div>
@@ -346,17 +339,40 @@ function ErrorHandlingSection() {
 
         <h3 className="text-xl font-semibold pt-4">Error Response Format</h3>
         <p>
-          Error responses include an error message and sometimes additional
-          details:
+          In case of an error in response, the response includes an error key,
+          which might be accompanied with additional details:
         </p>
 
         <div className="mt-2">
           <CopyBlock
             text={`{
-  "success": false,
   "error": {
+  "message": "The 'email' parameter is required",
     "code": "invalid_request",
-    "message": "The 'email' parameter is required",
+    "details": {
+      "field": "email"
+    }
+  }
+}`}
+            language="json"
+            theme={codepen}
+            codeBlock
+            showLineNumbers={false}
+          />
+        </div>
+        <h3 className="text-xl font-semibold pt-4">Success Response Format</h3>
+        <p>
+          In case of a successful request, the response includes a message key,
+          which might be accompanied with additional details:
+        </p>
+
+        <div className="mt-2">
+          <CopyBlock
+            text={`{
+  "message": "Your request was successful.",
+  "data": {
+  "message": "The 'email' parameter is required",
+    "code": "invalid_request",
     "details": {
       "field": "email"
     }
@@ -386,10 +402,14 @@ function RateLimitsSection() {
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">Default Rate Limits</h3>
         <ul className="space-y-2 list-disc pl-6">
-          <li>100 requests per minute</li>
-          <li>10,000 requests per day</li>
-          <li>100,000 emails per month (depending on your plan)</li>
+          <li>5 requests per minute</li>
+          <li>10 requests per day</li>
+          <li>50 emails per month (on Free plan)</li>
         </ul>
+
+        <p>
+          These limits vary with each plan, starting with high restrictions on the `Free` tier, reducing with the max_limit of your plan.
+        </p>
 
         <h3 className="text-xl font-semibold pt-4">Rate Limit Headers</h3>
         <p>
@@ -472,7 +492,7 @@ function ExamplesSection() {
             <CopyBlock
               text={`// Using Fetch API
 const sendEmail = async () => {
-  const response = await fetch('https://api.queuetie.com/v1/send', {
+  const response = await fetch('${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -504,7 +524,7 @@ sendEmail().catch(console.error);`}
             <CopyBlock
               text={`import requests
 
-url = 'https://api.queuetie.com/v1/send'
+url = '${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue'
 headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer YOUR_API_TOKEN'
@@ -532,7 +552,7 @@ print(data)`}
           <div className="rounded-xl border border-border/60 bg-card/30 p-4 backdrop-blur-sm">
             <CopyBlock
               text={`<?php
-$url = 'https://api.queuetie.com/v1/send';
+$url = '${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue';
 $data = array(
     'email' => 'recipient@example.com',
     'subject' => 'Hello from Queuetie API',
@@ -569,7 +589,7 @@ print_r(json_decode($result));
 require 'uri'
 require 'json'
 
-uri = URI.parse('https://api.queuetie.com/v1/send')
+uri = URI.parse('${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue')
 header = {
   'Content-Type': 'application/json',
   'Authorization': 'Bearer YOUR_API_TOKEN'
@@ -601,7 +621,7 @@ puts JSON.parse(response.body)`}
           <div className="rounded-xl border border-border/60 bg-card/30 p-4 backdrop-blur-sm">
             <CopyBlock
               text={`curl -X POST \\
-  https://api.queuetie.com/v1/send \\
+  ${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer YOUR_API_TOKEN" \\
   -d '{
@@ -625,7 +645,7 @@ puts JSON.parse(response.body)`}
 const documentation_nav = [
   { id: "overview", title: "Overview" },
   { id: "authentication", title: "Authentication" },
-  { id: "sending-emails", title: "Sending Emails" },
+  { id: "enqueueing-emails", title: "Enqueueing Emails" },
   { id: "attachments", title: "Attachments" },
   { id: "error-handling", title: "Error Handling" },
   { id: "rate-limits", title: "Rate Limits" },

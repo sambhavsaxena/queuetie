@@ -112,7 +112,6 @@ const set_order_active = async (req, res) => {
     return res.status(200).json({ message: `Subscription activated for plan ${subscription_plan}.` });
   }
   catch (err) {
-    console.log(err)
     return res.status(500).json({ error: "Activating subscription failed: " + err })
   }
 };
