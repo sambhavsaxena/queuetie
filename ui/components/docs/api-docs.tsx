@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 export function ApiDocs() {
   const [activeTab, setActiveTab] = useState("overview");
 
+  const base_api_url = ((typeof window !== "undefined") ? `${window.location.origin}/api` : "/api");
+
   return (
     <div className="space-y-12">
       <div className="space-y-4">
@@ -40,20 +42,26 @@ export function ApiDocs() {
           </div>
         </aside>
         <div className="space-y-8">
-          {activeTab === "overview" && <OverviewSection />}
+          {activeTab === "overview" && (
+            <OverviewSection base_api_url={base_api_url} />
+          )}
           {activeTab === "authentication" && <AuthenticationSection />}
-          {activeTab === "enqueueing-emails" && <EnqueueingEmailsSection />}
+          {activeTab === "enqueueing-emails" && (
+            <EnqueueingEmailsSection base_api_url={base_api_url} />
+          )}
           {activeTab === "attachments" && <AttachmentsSection />}
           {activeTab === "error-handling" && <ErrorHandlingSection />}
           {activeTab === "rate-limits" && <RateLimitsSection />}
-          {activeTab === "examples" && <ExamplesSection />}
+          {activeTab === "examples" && (
+            <ExamplesSection base_api_url={base_api_url} />
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function OverviewSection() {
+function OverviewSection({ base_api_url }: { base_api_url: string }) {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Overview</h2>
@@ -66,9 +74,7 @@ function OverviewSection() {
 
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">Base URL</h3>
-        <code className="rounded bg-muted px-2 py-1">
-          {process.env.NEXT_PUBLIC_API_URL}
-        </code>
+        <code className="rounded bg-muted px-2 py-1">{base_api_url}</code>
 
         <h3 className="text-xl font-semibold pt-4">Content Type</h3>
         <p>
@@ -145,7 +151,7 @@ function AuthenticationSection() {
   );
 }
 
-function EnqueueingEmailsSection() {
+function EnqueueingEmailsSection({ base_api_url }: { base_api_url: string }) {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Enqueueing Emails</h2>
@@ -158,7 +164,7 @@ function EnqueueingEmailsSection() {
       <div className="rounded-xl border border-border/60 bg-card/30 p-6 backdrop-blur-sm space-y-4">
         <h3 className="text-xl font-semibold">Endpoint</h3>
         <code className="rounded bg-muted px-2 py-1">
-          POST {process.env.NEXT_PUBLIC_API_URL}/queue/enqueue
+          POST {base_api_url}/queue/enqueue
         </code>
 
         <h3 className="text-xl font-semibold pt-4">Request Parameters</h3>
@@ -408,7 +414,8 @@ function RateLimitsSection() {
         </ul>
 
         <p>
-          These limits vary with each plan, starting with high restrictions on the `Free` tier, reducing with the max_limit of your plan.
+          These limits vary with each plan, starting with high restrictions on
+          the `Free` tier, reducing with the max_limit of your plan.
         </p>
 
         <h3 className="text-xl font-semibold pt-4">Rate Limit Headers</h3>
@@ -467,7 +474,7 @@ function RateLimitsSection() {
   );
 }
 
-function ExamplesSection() {
+function ExamplesSection({ base_api_url }: { base_api_url: string }) {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold">Code Examples</h2>
@@ -492,7 +499,7 @@ function ExamplesSection() {
             <CopyBlock
               text={`// Using Fetch API
 const sendEmail = async () => {
-  const response = await fetch('${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue', {
+  const response = await fetch('${base_api_url}/queue/enqueue', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -524,7 +531,7 @@ sendEmail().catch(console.error);`}
             <CopyBlock
               text={`import requests
 
-url = '${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue'
+url = '${base_api_url}/queue/enqueue'
 headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer YOUR_API_TOKEN'
@@ -552,7 +559,7 @@ print(data)`}
           <div className="rounded-xl border border-border/60 bg-card/30 p-4 backdrop-blur-sm">
             <CopyBlock
               text={`<?php
-$url = '${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue';
+$url = '${base_api_url}/queue/enqueue';
 $data = array(
     'email' => 'recipient@example.com',
     'subject' => 'Hello from Queuetie API',
@@ -589,7 +596,7 @@ print_r(json_decode($result));
 require 'uri'
 require 'json'
 
-uri = URI.parse('${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue')
+uri = URI.parse('${base_api_url}/queue/enqueue')
 header = {
   'Content-Type': 'application/json',
   'Authorization': 'Bearer YOUR_API_TOKEN'
@@ -621,7 +628,7 @@ puts JSON.parse(response.body)`}
           <div className="rounded-xl border border-border/60 bg-card/30 p-4 backdrop-blur-sm">
             <CopyBlock
               text={`curl -X POST \\
-  ${process.env.NEXT_PUBLIC_API_URL}/queue/enqueue \\
+  ${base_api_url}/queue/enqueue \\
   -H "Content-Type: application/json" \\
   -H "Authorization: Bearer YOUR_API_TOKEN" \\
   -d '{
