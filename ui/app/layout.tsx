@@ -3,13 +3,16 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import Head from "next/head";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Queuetie",
-  description: "An email queue management platform for your production environments.",
+  description:
+    "An email queue management platform for your production environments.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
@@ -22,9 +25,6 @@ export default function RootLayout({
       <body
         className={`${inter.className} min-h-screen bg-gradient-to-b from-background to-background/90 antialiased`}
       >
-        <Head>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
