@@ -82,7 +82,7 @@ export default function About() {
                   desc: "Began sketching out a minimalist solution to tackle email overhead, while I got stuck into more and more projects, facing the same problem over and over again.",
                 },
                 {
-                  year: "May 2025",
+                  year: "June 2025",
                   title: "Created MVP",
                   desc: "Launched v1, focusing on core features to bring immediate relief. To be honest, I made it for my personal use, but then I thought maybe there are many others facing the exact same issue. But at the same time, I didn't wish to create something like Blockchain, `A solution looking for a problem`.",
                 }

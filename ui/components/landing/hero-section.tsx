@@ -18,7 +18,7 @@ export function HeroSection() {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-gradient-to-tr from-green-500 to-green-700"></span>
             </span>
             <span className="dark:text-white text-black">
-              MVP launching this June
+              MVP launching this July
             </span>
           </div>
           <div className="space-y-4 max-w-[42rem]">
