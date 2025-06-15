@@ -25,7 +25,6 @@ app.use(cors({
   origin: FRONTEND_URL,
   credentials: true
 }));
-app.use(express.json());
 app.use(cookieParser());
 app.disable("x-powered-by"); // hides our deployment stack
 

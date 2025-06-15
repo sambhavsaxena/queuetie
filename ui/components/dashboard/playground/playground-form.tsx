@@ -103,18 +103,20 @@ export function PlaygroundForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setActiveTab("response");
+    const form_data = new FormData();
+    form_data.append("email", values.to);
+    form_data.append("subject", values.subject);
+    form_data.append("body", values.body);
+    attachments.forEach((file) => {
+      form_data.append("attachments", file);
+    });
+
     const response = await fetch(`/api/queue/enqueue`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${values.token}`
+        Authorization: `Bearer ${values.token}`,
       },
-      body: JSON.stringify({
-        email: values.to,
-        subject: values.subject,
-        body: values.body,
-        attachments,
-      }),
+      body: form_data,
     });
     const data = await response.json();
     setResponse(data);
@@ -145,7 +147,6 @@ export function PlaygroundForm() {
           API Response <Rocket className="ml-2 h-4 w-4" />
         </TabsTrigger>
       </TabsList>
-
       <TabsContent value="form" className="space-y-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

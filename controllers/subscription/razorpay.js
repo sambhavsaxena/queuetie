@@ -46,9 +46,9 @@ const create_order = async (req, res) => {
       provider: "Razorpay",
       user: user
     })
-    res.status(200).json(subscription);
+    return res.status(200).json(subscription);
   } catch (err) {
-    res.status(500).json({ error: "Razorpay order creation failed: " + JSON.stringify(err) });
+    return res.status(500).json({ error: "Razorpay order creation failed: " + JSON.stringify(err) });
   }
 };
 

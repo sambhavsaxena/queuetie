@@ -8,18 +8,20 @@ const enqueue_controller = async (req, res) => {
     if (remaining_emails <= 0) {
       return res.status(429).json({ error: "Usage quota exhausted." });
     }
-    const { email, subject, body, attachments } = req.body;
+    const { email, subject, body } = req.body;
     if (!email) {
       return res.status(400).json({ error: "Please provide email." });
     }
-    const id = await produce_email_enqueue_job(
-      {
-        email,
-        subject,
-        body,
-        attachments
-      }
-    );
+    const attachments = req.files.map(file => ({
+      filename: file.originalname,
+      path: file.path,
+    }));
+    const id = await produce_email_enqueue_job({
+      email,
+      subject,
+      body,
+      attachments
+    });
     keys_document.used_quota += 1;
     await keys_document.save();
     await Activity.create({
@@ -28,7 +30,7 @@ const enqueue_controller = async (req, res) => {
       user: user._id,
       status: "success",
     });
-    return res.status(201).json({ status: "success", id: id });
+    return res.status(201).json({ status: "success", id });
   } catch (error) {
     return res
       .status(500)

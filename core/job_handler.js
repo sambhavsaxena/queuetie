@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import fs from "fs/promises";
+import path from "path";
 
 export const email_job_handler = async (job) => {
     const {
@@ -26,5 +28,11 @@ export const email_job_handler = async (job) => {
 
     const info = await transporter.sendMail(mail_options);
     console.log(`Email sent: ${info.messageId}`);
+    if (attachments && Array.isArray(attachments)) {
+        for (const file of attachments) {
+            const filePath = path.resolve(file.path);
+            await fs.unlink(filePath);
+        }
+    }
     return { success: true, messageId: info.messageId };
 };
