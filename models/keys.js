@@ -6,40 +6,38 @@ const schema = mongoose.Schema(
       {
         id: {
           type: mongoose.Schema.Types.ObjectId,
-          auto: true,
+          auto: true
         },
         key: {
           type: String,
-          required: true,
-          unique: true,
+          required: true
         },
         identifier: {
           type: String,
-          required: true,
-          unique: true,
+          required: true
         },
         createdAt: {
           type: Date,
-          default: Date.now,
+          default: Date.now
         },
         updatedAt: {
           type: Date,
-          default: Date.now,
+          default: Date.now
         },
       },
     ],
     max_quota: {
       type: Number,
-      default: 50,
+      default: 50
     },
     used_quota: {
       type: Number,
-      default: 0,
+      default: 0
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: "User"
     },
   },
   {
