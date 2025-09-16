@@ -7,12 +7,14 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { Crown, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useToast } from "@/hooks/use-toast";
 
 interface HeaderProps {
   token: string;
 }
 
 export function Header({ token }: HeaderProps) {
+  const { toast } = useToast();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [subscription, setSubscription] = useState<string | null>(null);
@@ -27,20 +29,29 @@ export function Header({ token }: HeaderProps) {
     }
   }, [router, token]);
 
-  const handleLogout = () => {
-    fetch("/api/user/logout", {
-      method: "POST",
-      credentials: "include",
-    })
-      .then((res) => {
-        if (res.ok) {
-          router.refresh();
-          router.push("/");
-        }
-      })
-      .catch((err) => {
-        console.error("Logout failed", err);
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/user/logout", {
+        method: "POST",
+        credentials: "include",
       });
+      if (res.ok) {
+        router.refresh();
+        router.push("/");
+      } else {
+        toast({
+          title: "Logout failed",
+          description: "Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "An error occurred",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

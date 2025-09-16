@@ -78,7 +78,7 @@ export default function Payment({ plan }: PaymentProps) {
           !data.amount ||
           !data.currency
         ) {
-          throw new Error(data?.error || "Invalid plan selected");
+          throw new Error(data?.error || "A server error occurred");
         }
       } catch (err: any) {
         toast({

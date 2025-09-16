@@ -43,7 +43,7 @@ export function DashboardStats({ token }: HeaderProps) {
       }
     };
     fetchData();
-  }, []);
+  }, [token]);
 
   const placeholderStats = [
     { icon: Mail },

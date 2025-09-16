@@ -57,6 +57,15 @@ export function NewTokenForm() {
       },
       body: JSON.stringify({ identifier: name }),
     });
+    if(!response.ok) {
+      setIsLoading(false);
+      toast({
+        title: "Token generation failed",
+        description: "Failed to communicate with the server. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
     const data = await response.json();
     if (data.error) {
       setIsLoading(false);

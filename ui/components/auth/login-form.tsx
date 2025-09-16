@@ -21,7 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 const formSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address.",
-  })
+  }),
 });
 
 export function LoginForm() {
@@ -31,38 +31,46 @@ export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: ""
+      email: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     const { email } = values;
-    const response = await fetch(
-      `/api/user/login`,
-      {
+    try {
+      const response = await fetch(`/api/user/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
       }
-    );
-    const data = await response.json();
-    if (data.error) {
-      setIsLoading(false);
+      const data = await response.json();
+      if (data.error) {
+        setIsLoading(false);
+        toast({
+          title: "Login failed",
+          description: data.error,
+          variant: "destructive",
+        });
+        return;
+      }
       toast({
-        title: "Login failed",
-        description: data.error,
+        title: "Success",
+        description: data.message,
+        variant: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "Server didn't respond",
+        description: "Your login request failed because the server didn't respond. Please check the deployment logs.",
         variant: "destructive",
       });
-      return;
     }
-    toast({
-      title: "Success",
-      description: data.message,
-      variant: "success",
-    });
     form.reset();
     setIsLoading(false);
   }
