@@ -12,6 +12,7 @@ import {
   Key,
   KeyRound,
   Send,
+  Rocket
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { format } from "timeago.js";
@@ -34,6 +35,7 @@ const activityMap: Record<
   key_delete: { label: "Token deleted", Icon: KeyRound },
   key_create: { label: "Token created", Icon: Key },
   enqueue: { label: "Email enqueued", Icon: Send },
+  subscribe: { label: "Subscription activated", Icon: Rocket },
 };
 
 export function RecentActivity() {

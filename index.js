@@ -27,7 +27,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
-app.disable("x-powered-by"); // hides our deployment stack
+app.disable("x-powered-by");
 
 app.get("/", (req, res) => {
   return res.status(200).json({ message: "Server is healthy" });

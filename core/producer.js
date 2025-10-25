@@ -1,33 +1,26 @@
 import { email_queue } from "./connections.js";
-const { MAIL_SMTP_SERVICE, MAIL_SMTP_USER, MAIL_SMTP_PASSWORD } = process.env;
 
-const produce_email_enqueue_job = async ({ email, subject, body, attachments }) => {
+export const produce_email_enqueue_job = async ({ email, subject, body, attachments }) => {
   try {
+    if (!email) throw new Error("Missing recipient email");
+
     const payload = {
       to: email,
       subject,
       body,
-      from_user: MAIL_SMTP_USER,
-      from_service: MAIL_SMTP_SERVICE,
-      from_password: MAIL_SMTP_PASSWORD,
+      attachments: attachments || [],
     };
-    if (attachments && Array.isArray(attachments)) {
-      payload.attachments = attachments;
-    }
-    const response = await email_queue.add("email", payload, {
+
+    const job = await email_queue.add("send-email", payload, {
+      removeOnComplete: { age: 3600, count: 1000 },
+      removeOnFail: { age: 86400 * 3 }, // 3 days
       attempts: 3,
-      backoff: {
-        type: "exponential",
-        delay: 5000,
-      },
-      removeOnComplete: false,
-      removeOnFail: false,
+      backoff: { type: "exponential", delay: 1000 },
     });
-    return response.id;
-  } catch (error) {
-    console.error("Error queueing email: ", error);
-    throw new Error("Failed to enqueue email job", error);
+
+    return job.id;
+  } catch (err) {
+    console.error("Error queueing email:", err);
+    throw err;
   }
 };
-
-export default produce_email_enqueue_job;

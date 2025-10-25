@@ -6,7 +6,6 @@ import Keys from "../models/keys.js";
 
 const login_user = async (req, res) => {
   try {
-    console.log(req)
     const { email } = req.body;
     if (!email) {
       return res.status(400).json({ error: "Please provide email." });

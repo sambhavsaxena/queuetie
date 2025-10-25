@@ -1,4 +1,4 @@
-import produce_email_enqueue_job from "../../core/producer.js";
+import { produce_email_enqueue_job } from "../../core/producer.js";
 import Activity from "../../models/activity.js";
 
 const enqueue_controller = async (req, res) => {

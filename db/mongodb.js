@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 
 mongoose.set("strictQuery", false);
-const create_mongodb_connection = async () => {
+
+export const create_mongodb_connection = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    if (mongoose.connection.readyState !== 0) return;
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      maxPoolSize: 10,
+    });
     console.log(`MongoDB connected: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`Error: ${error.message}`);
-    process.exit();
+    console.error(`MongoDB connection error: ${error.message}`);
+    process.exit(1);
   }
 };
-
-export { create_mongodb_connection };

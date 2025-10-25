@@ -1,4 +1,4 @@
-import produce_email_enqueue_job from "../core/producer.js";
+import { produce_email_enqueue_job } from "../core/producer.js";
 import { create_token } from "./token.js";
 
 const send_email_verification = async (user) => {
@@ -25,7 +25,6 @@ const send_email_verification = async (user) => {
         }
     } catch (error) {
         console.error("Error sending email:", error);
-        return false;
     }
 };
 

@@ -2,24 +2,23 @@ import nodemailer from "nodemailer";
 import fs from "fs/promises";
 import path from "path";
 
+const { MAIL_SMTP_SERVICE, MAIL_SMTP_USER, MAIL_SMTP_PASSWORD } = process.env;
+
 export const email_job_handler = async (job) => {
     const {
         subject,
         body,
         attachments,
         to,
-        from_user,
-        from_service,
-        from_password,
     } = job.data;
 
     const transporter = nodemailer.createTransport({
-        service: from_service,
-        auth: { user: from_user, pass: from_password },
+        service: MAIL_SMTP_SERVICE,
+        auth: { user: MAIL_SMTP_USER, pass: MAIL_SMTP_PASSWORD },
     });
 
     const mail_options = {
-        from: `"Queuetie" <${from_user}>`,
+        from: `"Queuetie" <${MAIL_SMTP_USER}>`,
         to,
         subject,
         html: body,

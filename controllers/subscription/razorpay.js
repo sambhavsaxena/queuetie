@@ -4,7 +4,7 @@ import Subscription from "../../models/subscription.js";
 import User from "../../models/user.js"
 import Keys from "../../models/keys.js";
 import Activity from "../../models/activity.js"
-import produce_email_enqueue_job from "../../core/producer.js";
+import { produce_email_enqueue_job } from "../../core/producer.js";
 import PLANS from "../../constants/plans.js"
 
 const razorpay = new Razorpay({
@@ -70,7 +70,7 @@ const set_order_active = async (req, res) => {
     }
 
     const user_to_activate = await User.findById(user._id);
-    var key_document;
+    let key_document;
     key_document = await Keys.findOne({
       user: user._id
     })
@@ -91,6 +91,7 @@ const set_order_active = async (req, res) => {
     user_to_activate.subscription = subscription_plan;
 
     await subscription.save();
+    await key_document.save();
     await user_to_activate.save();
     await Activity.create({
       type: "subscribe",
