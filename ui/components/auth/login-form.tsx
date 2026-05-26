@@ -67,7 +67,7 @@ export function LoginForm() {
     } catch (error) {
       toast({
         title: "Server didn't respond",
-        description: "Your login request failed because the server didn't respond. Please check the deployment logs.",
+        description: String(error),
         variant: "destructive",
       });
     }
